@@ -1,10 +1,10 @@
 name: Build LocalWave v0.5.1 unsigned
 
 on:
-  push:
-    branches: [ "main" ]
+  pull_request:
     paths:
       - ".github/workflows/build-v051-unsigned.yml"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -14,8 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
       - uses: actions/setup-java@v5
         with:
@@ -32,7 +30,7 @@ jobs:
           set +o pipefail
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;36.0.0" >/dev/null
 
-      - name: Reconstruct preserved v0.5.0 canonical source
+      - name: Reconstruct preserved v0.5.0 source
         shell: bash
         run: |
           set -euo pipefail
@@ -46,7 +44,7 @@ jobs:
           test -f /tmp/lwsrc/app/build.gradle
           test -f /tmp/lwsrc/app/src/main/java/app/localwave/player/SecureEndpoint.java
 
-      - name: Convert source to v0.5.1 bridge release
+      - name: Convert source to v0.5.1 bridge
         shell: bash
         run: |
           set -euo pipefail
@@ -63,18 +61,6 @@ jobs:
           s = s.replace('E4Fw3RqTh5ItkfXOIFOkCVkYid6i0RMj2VoaCBiYT57EymrG', 'E4Fw3RqTh5INl+DKIkGyElkat9as0VkrmVQaDQHWWo6Z1G7c')
           s = s.replace('XdOXvdSLE+a43/3cdL4o/LzplOtiw+Fh', 'TJDSvdSLE+Zi8n1WHXnud3kZo9auCe6i')
           ep.write_text(s)
-
-          log = Path('/tmp/lwsrc/app/src/main/res/raw/changelog.md')
-          if not log.exists():
-              candidates = list(Path('/tmp/lwsrc/app/src/main/res').rglob('*.md'))
-              if candidates:
-                  log = candidates[0]
-          if log.exists():
-              old = log.read_text()
-              header = '# LocalWave Change Log\n\nThis file is bundled with LocalWave and can be exported from Settings > Change log.\n\n'
-              note = '## v0.5.1 — Signed-repository updater migration\n\n- Moved LocalWave update delivery to the dedicated public `livenewme/Localwave-Signed` repository.\n- Preserved SHA-256, package/version, historical signing-certificate, signer-continuity, sealed-cache, and PackageInstaller verification.\n- Retired the old `livenewme/livenewme/localwave/latest.json` endpoint for v0.5.1 and later.\n\n'
-              body = old[len(header):] if old.startswith(header) else old
-              log.write_text(header + note + body)
           PY
           grep -q 'versionCode 17' /tmp/lwsrc/app/build.gradle
           grep -q 'versionName "0.5.1"' /tmp/lwsrc/app/build.gradle
@@ -90,16 +76,28 @@ jobs:
           test -s /tmp/LocalWave-v0.5.1-unsigned-aligned.apk
           sha256sum /tmp/LocalWave-v0.5.1-unsigned-aligned.apk
 
-      - name: Commit temporary unsigned build
+      - name: Publish temporary unsigned artifact to main
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p staging/v0.5.1
-          cp /tmp/LocalWave-v0.5.1-unsigned-aligned.apk staging/v0.5.1/LocalWave-v0.5.1-unsigned-aligned.apk
-          sha256sum staging/v0.5.1/LocalWave-v0.5.1-unsigned-aligned.apk > staging/v0.5.1/unsigned.sha256
-          rm -f .github/workflows/build-v051-unsigned.yml
-          git config user.name 'LocalWave Build Bot'
-          git config user.email '75506096+livenewme@users.noreply.github.com'
-          git add -A
-          git commit -m 'build: stage unsigned LocalWave v0.5.1 [skip ci]'
-          git push
+          python3 - <<'PY'
+          import base64, json, os, urllib.request
+          from pathlib import Path
+          data = base64.b64encode(Path('/tmp/LocalWave-v0.5.1-unsigned-aligned.apk').read_bytes()).decode()
+          body = json.dumps({
+              'message': 'build: stage unsigned LocalWave v0.5.1 [skip ci]',
+              'content': data,
+              'branch': 'main'
+          }).encode()
+          req = urllib.request.Request(
+              'https://api.github.com/repos/livenewme/Localwave-Signed/contents/staging/v0.5.1/LocalWave-v0.5.1-unsigned-aligned.apk',
+              data=body,
+              method='PUT',
+              headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json'}
+          )
+          with urllib.request.urlopen(req) as r:
+              print(r.status)
+          PY
