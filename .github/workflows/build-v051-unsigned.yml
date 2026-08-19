@@ -1,0 +1,105 @@
+name: Build LocalWave v0.5.1 unsigned
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - ".github/workflows/build-v051-unsigned.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+
+      - name: Install Android SDK
+        shell: bash
+        run: |
+          set +o pipefail
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;36.0.0" >/dev/null
+
+      - name: Reconstruct preserved v0.5.0 canonical source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/lwparts /tmp/lwsrc
+          BASE='https://raw.githubusercontent.com/livenewme/livenewme/main/localwave/staging/source'
+          for i in 0000 0001 0002 0003 0004 0005 0006 0007; do
+            curl --fail --show-error --silent --location "$BASE/part-$i.b64" -o "/tmp/lwparts/part-$i.b64"
+          done
+          cat /tmp/lwparts/part-*.b64 | tr -d '\r\n\t ' | base64 -d > /tmp/localwave-source.tar.gz
+          tar -xzf /tmp/localwave-source.tar.gz -C /tmp/lwsrc --strip-components=1
+          test -f /tmp/lwsrc/app/build.gradle
+          test -f /tmp/lwsrc/app/src/main/java/app/localwave/player/SecureEndpoint.java
+
+      - name: Convert source to v0.5.1 bridge release
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          build = Path('/tmp/lwsrc/app/build.gradle')
+          s = build.read_text()
+          s = s.replace('versionCode 16', 'versionCode 17')
+          s = s.replace('versionName "0.5.0"', 'versionName "0.5.1"')
+          build.write_text(s)
+
+          ep = Path('/tmp/lwsrc/app/src/main/java/app/localwave/player/SecureEndpoint.java')
+          s = ep.read_text()
+          s = s.replace('E4Fw3RqTh5ItkfXOIFOkCVkYid6i0RMj2VoaCBiYT57EymrG', 'E4Fw3RqTh5INl+DKIkGyElkat9as0VkrmVQaDQHWWo6Z1G7c')
+          s = s.replace('XdOXvdSLE+a43/3cdL4o/LzplOtiw+Fh', 'TJDSvdSLE+Zi8n1WHXnud3kZo9auCe6i')
+          ep.write_text(s)
+
+          log = Path('/tmp/lwsrc/app/src/main/res/raw/changelog.md')
+          if not log.exists():
+              candidates = list(Path('/tmp/lwsrc/app/src/main/res').rglob('*.md'))
+              if candidates:
+                  log = candidates[0]
+          if log.exists():
+              old = log.read_text()
+              header = '# LocalWave Change Log\n\nThis file is bundled with LocalWave and can be exported from Settings > Change log.\n\n'
+              note = '## v0.5.1 — Signed-repository updater migration\n\n- Moved LocalWave update delivery to the dedicated public `livenewme/Localwave-Signed` repository.\n- Preserved SHA-256, package/version, historical signing-certificate, signer-continuity, sealed-cache, and PackageInstaller verification.\n- Retired the old `livenewme/livenewme/localwave/latest.json` endpoint for v0.5.1 and later.\n\n'
+              body = old[len(header):] if old.startswith(header) else old
+              log.write_text(header + note + body)
+          PY
+          grep -q 'versionCode 17' /tmp/lwsrc/app/build.gradle
+          grep -q 'versionName "0.5.1"' /tmp/lwsrc/app/build.gradle
+          grep -q 'E4Fw3RqTh5INl+DKIkGyElkat9as0VkrmVQaDQHWWo6Z1G7c' /tmp/lwsrc/app/src/main/java/app/localwave/player/SecureEndpoint.java
+
+      - name: Build unsigned v0.5.1
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/lwsrc
+          gradle --no-daemon clean assembleRelease
+          "$ANDROID_HOME/build-tools/36.0.0/zipalign" -f -p 4 app/build/outputs/apk/release/app-release-unsigned.apk /tmp/LocalWave-v0.5.1-unsigned-aligned.apk
+          test -s /tmp/LocalWave-v0.5.1-unsigned-aligned.apk
+          sha256sum /tmp/LocalWave-v0.5.1-unsigned-aligned.apk
+
+      - name: Commit temporary unsigned build
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p staging/v0.5.1
+          cp /tmp/LocalWave-v0.5.1-unsigned-aligned.apk staging/v0.5.1/LocalWave-v0.5.1-unsigned-aligned.apk
+          sha256sum staging/v0.5.1/LocalWave-v0.5.1-unsigned-aligned.apk > staging/v0.5.1/unsigned.sha256
+          rm -f .github/workflows/build-v051-unsigned.yml
+          git config user.name 'LocalWave Build Bot'
+          git config user.email '75506096+livenewme@users.noreply.github.com'
+          git add -A
+          git commit -m 'build: stage unsigned LocalWave v0.5.1 [skip ci]'
+          git push
