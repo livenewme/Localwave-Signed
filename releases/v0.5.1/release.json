@@ -1,0 +1,7 @@
+{
+  "versionCode": 17,
+  "versionName": "0.5.1",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/main/releases/v0.5.1/LocalWave-v0.5.1.apk",
+  "sha256": "35dd6df688315e76e9940be9e72aa145a434b7f36e35fd04cb289092bd67ffa7",
+  "releaseNotes": "Bridge release: moves LocalWave update checks from the legacy distribution repository to the dedicated public Localwave-Signed repository while preserving the established LocalWave signing identity and updater verification checks."
+}
