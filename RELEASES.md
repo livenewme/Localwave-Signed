@@ -2,6 +2,22 @@
 
 This repository is the public distribution endpoint for signed LocalWave Android releases.
 
+## Active vs archived releases
+
+The LocalWave updater enumerates **only**:
+
+```text
+releases/
+```
+
+Historical builds belong under:
+
+```text
+archive/
+```
+
+Anything under `archive/` is invisible to normal in-app update discovery.
+
 ## Version layout
 
 Each production version gets its own immutable directory:
@@ -25,25 +41,25 @@ Example:
 {
   "versionCode": 17,
   "versionName": "0.5.1",
-  "fileName": "LocalWave-v0.5.1.apk",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/main/releases/v0.5.1/LocalWave-v0.5.1.apk",
   "sha256": "<64 lowercase hex characters>",
-  "packageName": "app.localwave.player",
-  "certificateSha256": "34d98c603a2a2c54777c0065ecc3e38c3a4162d4f37d09ae137d004654d39a72",
-  "releaseNotes": "Updater migration to Localwave-Signed."
+  "releaseNotes": "Moves LocalWave update discovery to Localwave-Signed."
 }
 ```
 
+The current app consumes `versionCode`, `versionName`, `apkUrl`, `sha256`, and optional `releaseNotes`. The APK itself remains the final authority for package/version/signing identity.
+
 ## Publication sequence
 
-1. Build the release from the private canonical `livenewme/LocalWave` source repository.
+1. Build the release from private canonical `livenewme/LocalWave`.
 2. Sign the final APK with the established LocalWave release key.
-3. Verify package, version, signer, and signature.
-4. Calculate SHA-256 from the exact final signed APK.
+3. Verify package, version, signer, and APK signature.
+4. Calculate SHA-256 from the exact signed APK.
 5. Create `releases/vX.Y.Z/`.
 6. Upload `LocalWave-vX.Y.Z.apk`.
-7. Re-fetch or otherwise verify the hosted APK bytes and SHA-256.
-8. Add `release.json` using the verified final hash.
-9. Update this repository's `CHANGELOG.md` and `HANDOFF.md`.
+7. Verify the hosted APK bytes and SHA-256.
+8. Add `release.json` with the exact hosted APK URL and verified hash.
+9. Update `CHANGELOG.md` and `HANDOFF.md`.
 10. Never mutate that version's APK afterward.
 
 ## Naming rules
@@ -54,14 +70,25 @@ Example:
 - Android package: `app.localwave.player`
 - `versionCode` must increase monotonically.
 
-## Updater behavior
+## Updater behavior beginning with v0.5.1
 
-The client should enumerate candidate release directories, parse release metadata, select the highest newer valid version, then download and verify the corresponding APK.
+The app requests GitHub's public Contents API for:
 
-A malformed directory, bad metadata file, wrong package, stale version, SHA mismatch, or wrong signing certificate must be ignored/rejected.
+```text
+/repos/livenewme/Localwave-Signed/contents/releases?ref=main
+```
+
+It considers only directories matching `v...`, reads each directory's `release.json`, ignores malformed or incomplete entries, and selects the candidate with the highest `versionCode` above the installed build.
+
+Before installation, the downloaded APK must still pass:
+
+- exact SHA-256 from `release.json`
+- package `app.localwave.player`
+- exact metadata `versionCode` and `versionName`
+- higher versionCode than installed
+- established LocalWave certificate SHA-256
+- signer continuity with the installed LocalWave app
 
 ## Rollback
 
-Do not overwrite an existing release to roll back. Android update continuity depends on monotonically increasing `versionCode` values.
-
-If a prior behavior must be restored, ship a new APK with a higher `versionCode` containing the desired code.
+Never overwrite an existing production release. To restore older behavior, publish new code with a higher Android `versionCode`.
