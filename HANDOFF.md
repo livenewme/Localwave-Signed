@@ -4,97 +4,86 @@
 
 `livenewme/Localwave-Signed` is the permanent **public distribution repository** for production-signed LocalWave Android APKs.
 
-It is intentionally separate from the private canonical source repository:
+Private canonical source remains:
 
 `livenewme/LocalWave`
 
-Do not place application source, signing keystores, signing passwords, or recovery credentials here.
+Never place application source, signing keystores, signing passwords, or recovery credentials here.
 
 ## Trusted application identity
 
-Package:
+- Package: `app.localwave.player`
+- Trusted release certificate SHA-256: `34d98c603a2a2c54777c0065ecc3e38c3a4162d4f37d09ae137d004654d39a72`
+- Key algorithm: RSA 3072-bit
 
-`app.localwave.player`
+## Current migration state — 2026-08-18
 
-Trusted release certificate SHA-256:
+- LocalWave v0.5.0 is installed by the user and is the last pre-migration updater generation.
+- Canonical v0.5.1 source is now versionCode 17 / versionName 0.5.1.
+- v0.5.1 replaces the legacy mutable `latest.json` model with repository-directory discovery from this repo.
+- Active discovery is restricted to `releases/`.
+- `archive/` has been initialized for historical artifacts and metadata and is intentionally invisible to update discovery.
+- v0.5.1 signed APK is not yet published here; do not create final `release.json` until exact signed bytes and SHA-256 are known.
 
-`34d98c603a2a2c54777c0065ecc3e38c3a4162d4f37d09ae137d004654d39a72`
+## Active updater architecture beginning with v0.5.1
 
-Key algorithm: RSA 3072-bit
+The app requests:
 
-## Current migration state
+`https://api.github.com/repos/livenewme/Localwave-Signed/contents/releases?ref=main`
 
-As of 2026-08-18:
+It considers directories matching `v...`, constructs each candidate's raw `release.json` URL, ignores malformed/incomplete directories, and selects the highest `versionCode` newer than the installed build.
 
-- User has manually installed LocalWave v0.5.0.
-- Canonical source is in private `livenewme/LocalWave`.
-- Legacy updater/distribution lived under public `livenewme/livenewme/localwave`.
-- This repository was created to replace that legacy distribution location.
-- The next intended release is **v0.5.1**, a bridge release whose updater discovers future signed releases from this repository.
+Required `release.json` fields:
 
-## Intended updater architecture
-
-Future LocalWave builds should discover releases from this public repository rather than rely on the legacy mutable `latest.json` feed.
-
-Preferred repository layout:
-
-```text
-releases/
-  v0.5.1/
-    LocalWave-v0.5.1.apk
-    release.json
-  v0.5.2/
-    LocalWave-v0.5.2.apk
-    release.json
+```json
+{
+  "versionCode": 17,
+  "versionName": "0.5.1",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/main/releases/v0.5.1/LocalWave-v0.5.1.apk",
+  "sha256": "<exact signed APK SHA-256>",
+  "releaseNotes": "Moves LocalWave update discovery to Localwave-Signed."
+}
 ```
 
-The client should enumerate candidate version directories, select a newer valid release, read its metadata, download the APK, and independently verify:
+Before installation the client independently verifies:
 
 - HTTPS origin
-- exact package `app.localwave.player`
-- `versionCode` newer than installed
-- metadata/version agreement
-- SHA-256 of downloaded bytes
-- trusted historical LocalWave signer
+- release metadata shape
+- directory/versionName agreement
+- APK URL remains inside that release directory
+- exact SHA-256
+- package `app.localwave.player`
+- APK versionCode and versionName agree with metadata
+- versionCode is newer than installed
+- historical LocalWave signing certificate
 - signer continuity with installed LocalWave
 
-The updater must reject any candidate failing any of those checks.
+## Archive
+
+`archive/` is historical-only. The updater never enumerates it.
+
+`archive/README.md` contains the durable historical SHA-256 index through v0.5.0. `archive/v0.5.0/release.json` records the verified v0.5.0 identity. Binary historical APKs can be copied into archive version directories when available, but never move an archived version back into active `releases/` unless shipping a genuinely new versionCode.
 
 ## Release requirements
 
-For every new production version:
+For every production version:
 
-1. Update canonical private source.
-2. Increment `versionCode` and `versionName`.
+1. Update private canonical source.
+2. Increment versionCode/versionName.
 3. Build release APK.
-4. Sign with the established LocalWave signing key.
+4. Sign with the established LocalWave key.
 5. Verify signature, package, version, and certificate.
-6. Calculate SHA-256 of exact signed APK.
-7. Publish to a new immutable `releases/vX.Y.Z/` directory here.
-8. Add matching `release.json`.
+6. Calculate SHA-256 of the exact signed APK.
+7. Create a new immutable `releases/vX.Y.Z/` directory here.
+8. Upload exact signed APK.
 9. Verify hosted bytes/hash.
-10. Update `CHANGELOG.md` and this handoff.
+10. Add final `release.json` only after the APK exists and its hash is verified.
+11. Update `CHANGELOG.md` and this handoff.
 
-## Signing key handling
+## Signing-key handling
 
-The actual LocalWave release JKS and passwords must remain outside this public repository.
+Signing material remains outside this public repo. Use the private canonical repository's documented password-gated recovery flow when signing is required. Never print or commit signing/recovery passwords here.
 
-The signing keystore was recovered from historical LocalWave signing backup material during the v0.5.0 migration. Future sessions should use the private canonical repository's documented encrypted recovery workflow when signing access is required.
+## Immutability
 
-Never print or commit the keystore password or recovery password here.
-
-## Version immutability
-
-Never replace an APK already published under an existing version directory.
-
-If a release is defective, create a new release with a higher Android `versionCode`.
-
-## Files to keep current
-
-Every production release should update:
-
-- `CHANGELOG.md`
-- `HANDOFF.md`
-- corresponding `releases/vX.Y.Z/release.json`
-
-`README.md`, `SECURITY.md`, and `RELEASES.md` should only change when repository architecture or policy changes.
+Never replace a published APK under an existing version directory. A defective release is superseded by a new higher versionCode.
