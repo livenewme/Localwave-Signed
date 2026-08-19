@@ -2,19 +2,20 @@
 
 Public distribution repository for production-signed LocalWave Android APKs.
 
-This repository is intentionally **release-only**. The LocalWave application source, build logic, development history, and signing credentials do not live here.
+This repository is intentionally **release-only**. The LocalWave application source, build logic, development history, signing keystore, and signing passwords do not live here.
 
 ## Purpose
 
-Installed copies of LocalWave use this public repository as a trusted distribution location for newer production APKs.
+Installed copies of LocalWave use this repository to discover and download newer production APKs.
 
-Every APK published here must:
+Every APK published as an active release must:
 
-- use package name `app.localwave.player`
+- use package `app.localwave.player`
 - have a monotonically increasing Android `versionCode`
 - be signed by the established LocalWave release certificate
+- have an exact SHA-256 recorded in `release.json`
 - pass package/version/signature verification before publication
-- be immutable once published
+- remain immutable once published
 
 ## Trusted LocalWave signer
 
@@ -24,52 +25,61 @@ Certificate SHA-256:
 
 Key algorithm: RSA 3072-bit
 
-Keystore and passwords are **not stored in this repository**.
+Keystore and passwords are **not stored here**.
 
 ## Repository layout
 
 ```text
-releases/
+releases/                 # active in-app update discovery
   v0.5.1/
     LocalWave-v0.5.1.apk
     release.json
   v0.5.2/
     LocalWave-v0.5.2.apk
     release.json
+
+archive/                  # historical only; never searched by updater
+  README.md
+  v0.5.0/
+    release.json
 ```
 
-Each version directory is immutable after publication.
+## Update discovery beginning with LocalWave v0.5.1
 
-## Update discovery
+LocalWave queries GitHub's public Contents API for this repository's `releases/` directory, considers version directories, reads each candidate's `release.json`, and chooses the highest valid `versionCode` newer than the installed app.
 
-LocalWave will discover newer versions from this repository, then independently verify the APK before installation.
+The updater does **not** enumerate `archive/`.
 
-The updater must never trust a filename alone. A candidate update must pass all of the following checks:
+A candidate APK must then independently pass all of these checks:
 
-1. HTTPS-only download
-2. package name is exactly `app.localwave.player`
-3. APK `versionCode` is newer than the installed build
-4. APK version agrees with release metadata
-5. SHA-256 matches the published release record
-6. APK is signed by the established LocalWave release certificate
-7. signer matches the currently installed LocalWave application
+1. HTTPS-only transport
+2. SHA-256 matches `release.json`
+3. package is exactly `app.localwave.player`
+4. APK versionCode equals release metadata and is newer than installed
+5. APK versionName equals release metadata
+6. APK contains the established LocalWave release certificate
+7. signer matches the installed LocalWave application
 
-If any check fails, the update must be rejected.
+A public repository therefore does not make arbitrary APKs trusted; a production update still requires the private LocalWave signing key.
 
 ## Source repository
 
-The canonical LocalWave source repository is private:
+Canonical LocalWave source remains private:
 
 `livenewme/LocalWave`
 
-This public repository exists only to distribute signed production artifacts.
+## Historical archive
+
+`archive/README.md` contains the durable hash index for recovered historical releases through v0.5.0. Historical binaries can be added there as they are recovered without affecting update discovery.
 
 ## Release policy
 
-See [RELEASES.md](RELEASES.md) for the publication procedure and [SECURITY.md](SECURITY.md) for signing and trust requirements.
+See [RELEASES.md](RELEASES.md) for the publication contract and [SECURITY.md](SECURITY.md) for trust requirements.
 
 ## Current status
 
-Repository initialized for the post-v0.5.0 updater migration.
-
-The first release intended to use this repository as its permanent update source is the v0.5.1 bridge release.
+- Public signed-artifact repository: active
+- Historical archive: initialized
+- v0.5.1 canonical source: versionCode 17
+- v0.5.1 purpose: migrate in-app update discovery permanently to this repository
+- v0.5.1 signed APK: not published until build/sign/verification completes
