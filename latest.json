@@ -1,7 +1,7 @@
 {
-  "versionCode": 28,
-  "versionName": "0.10.2",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.10.2/LocalWave-v0.10.2-release-signed.apk",
-  "sha256": "b8ac8988a9b07e3364fd546a231830fae1f7ab974f5277070a235083bef75a7d",
-  "releaseNotes": "Play on TV: adds Samsung/DLNA discovery and direct local playback for Samsung TU690T-class and other compatible TVs while keeping Google Cast available. Start a song, open Play on TV, then scan for Samsung / DLNA TVs."
+  "versionCode": 29,
+  "versionName": "0.10.3",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.10.3/LocalWave-v0.10.3-release-signed.apk",
+  "sha256": "79a68c819c2d7756bcbee4472355e90fad979286b484dc6f0b9b5e42df6c17f6",
+  "releaseNotes": "Samsung/DLNA TV artwork: sends LocalWave's authenticated phone-hosted album artwork URL to compatible TVs using standard UPnP album-art metadata plus Samsung compatibility metadata."
 }
