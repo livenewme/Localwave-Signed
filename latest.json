@@ -1,7 +1,7 @@
 {
-  "versionCode": 20,
-  "versionName": "0.5.4",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.5.4/LocalWave-v0.5.4-release-signed.apk",
-  "sha256": "2c960a6eb069f0f8bb9886f3fd9bd43116de6a84a011feea9f5a06c3a5707629",
-  "releaseNotes": "Updater validation release. No player behavior or library-data changes; this version exists to exercise the restored signed update path from v0.5.3."
+  "versionCode": 21,
+  "versionName": "0.6.0",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.6.0/LocalWave-v0.6.0-release-signed.apk",
+  "sha256": "d25bdf4f32879dc7327fe8e92524310b1293022e80f84eacaeafb5f4f243ff85",
+  "releaseNotes": "Library Health adds a collection-wide score and tappable findings for missing covers, artist and album tags, probable duplicates, suspiciously low-bitrate files, and inconsistent album names. Supported MP3 metadata issues open the native editor; duplicate and bitrate findings remain review-only, and scanning never changes audio."
 }
