@@ -1,7 +1,7 @@
 {
-  "versionCode": 24,
-  "versionName": "0.9.0",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.9.0/LocalWave-v0.9.0-release-signed.apk",
-  "sha256": "f961d6f4234190935a1ae2dc47fe9453340784d8b2f1e9460687c9a171431067",
-  "releaseNotes": "Chromecast support adds a Cast button for Chromecast, Google TV, Nest speakers and displays, and compatible Google Cast receivers on the same Wi-Fi network. LocalWave transfers the active queue, position, playback state, controls, metadata, and artwork between the phone and receiver. Local music stays on the phone and is served only through a temporary authenticated same-Wi-Fi stream; it is not uploaded to a LocalWave cloud. Listening Statistics follow actual remote playback without double-counting route handoff. Google Play services are required, and audio-format support depends on the receiver because this release does not transcode files."
+  "versionCode": 23,
+  "versionName": "0.8.0",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.8.0/LocalWave-v0.8.0-release-signed.apk",
+  "sha256": "518f33159f45e344ac81fda2e2b574e9435538c97b606b9e6be52bf8cb5ca40d",
+  "releaseNotes": "Listening Statistics adds private, on-device monthly summaries with qualified song plays, actual audible listening time, top artists and tracks, active days, and the busiest three-hour listening window. Library Health probable-duplicate results now let you compare every matching file, play the selected copy, keep it, or delete exactly that selected file through Android's confirmation flow. Duplicate detection remains probabilistic, and LocalWave never bulk-deletes or silently chooses a winner."
 }
