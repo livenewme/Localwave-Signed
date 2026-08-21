@@ -1,0 +1,7 @@
+{
+  "versionCode": 19,
+  "versionName": "0.5.3",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.5.3/LocalWave-v0.5.3-release-signed.apk",
+  "sha256": "9130e67fd8b8f1ac7d6c0e6091c24f99d6fd3a0838bd0e04192303e547d2841d",
+  "releaseNotes": "Restores the signed in-app updater, links the public release feed, corrects the bundled changelog, and includes current Android compatibility fixes."
+}
