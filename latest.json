@@ -1,7 +1,7 @@
 {
-  "versionCode": 25,
-  "versionName": "0.9.1",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.9.1/LocalWave-v0.9.1-release-signed.apk",
-  "sha256": "5a5b3ba16aea8c3f302192b1a6ea08677e77412cc45ab45a5b541cda044072ea",
-  "releaseNotes": "Emergency launch recovery: replaces the withdrawn v0.9.0 build with the previously proven v0.8.0 runtime path, repackaged as v0.9.1 so it can install directly over v0.9.0. Your existing LocalWave app data and v0.8 features remain in place. Chromecast is temporarily disabled while its launch crash is investigated."
+  "versionCode": 26,
+  "versionName": "0.10.0",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.10.0/LocalWave-v0.10.0-release-signed.apk",
+  "sha256": "bae6fb65bfb1dd4fa84ffcd7ba7ddf69928955818e6fcc411d841d7fefaafafd",
+  "releaseNotes": "Chromecast retry: adds opt-in Cast playback behind a separate startup-isolated screen while preserving the proven v0.9.1 local launch path. Cast initializes only after you tap Cast. This release is being shipped live for real-device testing; if a device regression appears, LocalWave will recover with a newer signed version rather than withholding future verified builds."
 }
