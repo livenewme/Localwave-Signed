@@ -1,0 +1,89 @@
+name: Publish LocalWave v0.13.3
+
+on:
+  push:
+    branches: [release-feed]
+    paths:
+      - '.github/workflows/publish-v0133-temp.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release feed
+        uses: actions/checkout@v4
+        with:
+          ref: release-feed
+          fetch-depth: 0
+
+      - name: Download and verify signed artifact
+        env:
+          SOURCE_URL: 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-2270-81fd-b120-150ba96fb69a/raw?se=2026-08-21T23%3A02%3A59Z&sp=r&sv=2026-02-06&sr=b&scid=10f9ec72-880a-5392-8b34-68f0bca94fc6&skoid=4b04981f-b1dc-41e0-a770-8ce0d5c8f411&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-21T15%3A41%3A33Z&ske=2026-08-22T15%3A41%3A33Z&sks=b&skv=2026-02-06&sig=wAqB8vQckewr8X5sAa0kackhxkNaMhRpPFBMsRLrZdI%3D'
+          EXPECTED_SHA256: '8ce3be763a977163ee580ffb04cd3d9bb4d4420f96caed01040c42db7cf9fca3'
+          EXPECTED_SIZE: '2888933'
+        shell: bash
+        run: |
+          set -euo pipefail
+          zip="$RUNNER_TEMP/LocalWave-v0.13.3-release-signed.zip"
+          dir="$RUNNER_TEMP/v0133"
+          mkdir -p "$dir"
+          curl --fail --location --retry 3 --retry-delay 2 "$SOURCE_URL" -o "$zip"
+          unzip -q "$zip" -d "$dir"
+          apk="$dir/LocalWave-v0.13.3-release-signed.apk"
+          test -f "$apk"
+          actual_sha="$(sha256sum "$apk" | awk '{print $1}')"
+          actual_size="$(stat -c '%s' "$apk")"
+          test "$actual_sha" = "$EXPECTED_SHA256"
+          test "$actual_size" = "$EXPECTED_SIZE"
+
+          release_dir="releases/v0.13.3"
+          mkdir -p "$release_dir"
+          cp "$apk" "$release_dir/LocalWave-v0.13.3-release-signed.apk"
+          printf '%s  LocalWave-v0.13.3-release-signed.apk\n' "$EXPECTED_SHA256" \
+            > "$release_dir/LocalWave-v0.13.3-release-signed.apk.sha256"
+          cat > "$release_dir/README.md" <<'EOF'
+          # LocalWave v0.13.3
+
+          Stable Whole House synchronization.
+
+          Fixes false phase jumps from skipped coarse Samsung/DLNA position ticks and replaces noisy per-TV correction chasing with robust multi-sample clock filtering plus bounded whole-group rendezvous. Existing receiver backpressure protection and adaptive per-TV start-latency learning remain intact.
+
+          Package: `app.localwave.player`  
+          versionCode: `37`
+          EOF
+
+          git config user.name 'LocalWave Release Bot'
+          git config user.email '75506096+livenewme@users.noreply.github.com'
+          git add "$release_dir"
+          git commit -m 'Publish LocalWave v0.13.3 signed APK'
+          git push origin HEAD:release-feed
+
+      - name: Activate updater manifest last
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 37,
+            "versionName": "0.13.3",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.3/LocalWave-v0.13.3-release-signed.apk",
+            "sha256": "8ce3be763a977163ee580ffb04cd3d9bb4d4420f96caed01040c42db7cf9fca3",
+            "releaseNotes": "Stable Whole House synchronization: fixes false phase jumps from skipped Samsung/DLNA whole-second position ticks, filters several receiver clock observations before correcting, and uses bounded whole-group rendezvous instead of chasing noisy per-TV offsets."
+          }
+          EOF
+          git add latest.json
+          git commit -m 'Activate LocalWave v0.13.3 in latest.json'
+          git push origin HEAD:release-feed
+
+      - name: Remove temporary publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          git pull --rebase origin release-feed
+          rm -f .github/workflows/publish-v0133-temp.yml
+          git add -A .github/workflows/publish-v0133-temp.yml
+          git commit -m 'Remove temporary v0.13.3 publisher'
+          git push origin HEAD:release-feed
