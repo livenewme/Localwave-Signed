@@ -1,7 +1,7 @@
 {
-  "versionCode": 29,
-  "versionName": "0.10.3",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.10.3/LocalWave-v0.10.3-release-signed.apk",
-  "sha256": "79a68c819c2d7756bcbee4472355e90fad979286b484dc6f0b9b5e42df6c17f6",
-  "releaseNotes": "Samsung/DLNA TV artwork: sends LocalWave's authenticated phone-hosted album artwork URL to compatible TVs using standard UPnP album-art metadata plus Samsung compatibility metadata."
+  "versionCode": 30,
+  "versionName": "0.11.0",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.11.0/LocalWave-v0.11.0-release-signed.apk",
+  "sha256": "ec1158f059914e65a9be1844f2620375bec0a27e6615fb3c389530559e56d8a4",
+  "releaseNotes": "Whole House Samsung/DLNA playback: select one, several, or all discovered TVs for synchronized room-to-room music, with shared-deadline starts, group controls, Resync TVs, album artwork, and conservative drift correction."
 }
