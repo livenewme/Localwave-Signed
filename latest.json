@@ -1,7 +1,7 @@
 {
-  "versionCode": 33,
-  "versionName": "0.12.1",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.12.1/LocalWave-v0.12.1-release-signed.apk",
-  "sha256": "9917e5b0fc3c8d67417a184862454604dbdde02b60024167c9290d18eae9aacb",
-  "releaseNotes": "Samsung/DLNA backpressure fix: reduces AVTransport polling pressure, independently backs off busy TVs on HTTP 429/500/503, and suppresses transient receiver-busy errors while preserving adaptive Whole House clock synchronization."
+  "versionCode": 34,
+  "versionName": "0.13.0",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.0/LocalWave-v0.13.0-release-signed.apk",
+  "sha256": "ebbcf17df7bc98185b7e42f87b5fef47fa9b8f14d93e517a4dd87d0b22412cea",
+  "releaseNotes": "TV playback usability: after connecting Samsung/DLNA TVs, return to the normal LocalWave library/player and keep browsing and controlling playback there. A persistent Playing on TV banner shows the active TV/group and opens TV management when tapped."
 }
