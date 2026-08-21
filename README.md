@@ -14,5 +14,9 @@ higher version code so it installs directly over v0.9.0 without uninstalling.
 Existing v0.8 features remain available. Chromecast is temporarily disabled while
 the v0.9.0 launch crash is investigated.
 
+On 2026-08-21, the affected user installed v0.9.1 directly over the crashing
+v0.9.0 build and confirmed that LocalWave launches again on the Galaxy S24 Ultra
+running Android 16. Chromecast remains disabled.
+
 The updater reads `latest.json`, verifies trusted HTTPS hosts, checks the APK SHA-256,
 then validates package name, version code, and signing certificate before installation.
