@@ -1,7 +1,7 @@
 {
-  "versionCode": 27,
-  "versionName": "0.10.1",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.10.1/LocalWave-v0.10.1-release-signed.apk",
-  "sha256": "fb0399d4a8b0bef44909da07d29cf9b86043e4fc7332b480a39b9f8cd922b861",
-  "releaseNotes": "Chromecast fix: repairs the AndroidX MediaRouter chooser failure 'background can not be translucent: #0' seen in v0.10.0. The Cast screen now has its own opaque AppCompat-compatible theme while normal LocalWave startup remains isolated from Cast."
+  "versionCode": 28,
+  "versionName": "0.10.2",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.10.2/LocalWave-v0.10.2-release-signed.apk",
+  "sha256": "b8ac8988a9b07e3364fd546a231830fae1f7ab974f5277070a235083bef75a7d",
+  "releaseNotes": "Play on TV: adds Samsung/DLNA discovery and direct local playback for Samsung TU690T-class and other compatible TVs while keeping Google Cast available. Start a song, open Play on TV, then scan for Samsung / DLNA TVs."
 }

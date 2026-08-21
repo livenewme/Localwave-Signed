@@ -2,12 +2,12 @@
 
 This branch is the live update feed for LocalWave.
 
-- Current version: 0.10.1
-- versionCode: 27
+- Current version: 0.10.2
+- versionCode: 28
 - Package: app.localwave.player
-- APK SHA-256: fb0399d4a8b0bef44909da07d29cf9b86043e4fc7332b480a39b9f8cd922b861
+- APK SHA-256: b8ac8988a9b07e3364fd546a231830fae1f7ab974f5277070a235083bef75a7d
 - Signer certificate SHA-256: 58d7c6616a809d769b4211cb21a16d37a018a112617184e2f4093cedfeb3e4ba
 
-v0.10.1 fixes the first physical-device failure found in the isolated Chromecast retry. v0.10.0 launched normally but AndroidX MediaRouter rejected a missing AppCompat theme color as transparent. v0.10.1 gives only the Cast activity a fully opaque AppCompat-compatible theme and leaves normal LocalWave startup on the previously accepted path.
+v0.10.2 keeps the isolated Google Cast implementation and adds Samsung/DLNA TV discovery and direct local playback through standard SSDP/UPnP AVTransport. The initial hardware target is the Samsung TU690T family.
 
-The updater reads `latest.json`, verifies trusted HTTPS hosts, checks the APK SHA-256, then validates package name, version code, and signing certificate before installation.
+Releases are published APK-first and manifest-last. The updater verifies trusted HTTPS hosts, APK SHA-256, package name, version code, and the pinned LocalWave signing certificate before installation.
