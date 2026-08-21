@@ -1,7 +1,7 @@
 {
-  "versionCode": 26,
-  "versionName": "0.10.0",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.10.0/LocalWave-v0.10.0-release-signed.apk",
-  "sha256": "bae6fb65bfb1dd4fa84ffcd7ba7ddf69928955818e6fcc411d841d7fefaafafd",
-  "releaseNotes": "Chromecast retry: adds opt-in Cast playback behind a separate startup-isolated screen while preserving the proven v0.9.1 local launch path. Cast initializes only after you tap Cast. This release is being shipped live for real-device testing; if a device regression appears, LocalWave will recover with a newer signed version rather than withholding future verified builds."
+  "versionCode": 27,
+  "versionName": "0.10.1",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.10.1/LocalWave-v0.10.1-release-signed.apk",
+  "sha256": "fb0399d4a8b0bef44909da07d29cf9b86043e4fc7332b480a39b9f8cd922b861",
+  "releaseNotes": "Chromecast fix: repairs the AndroidX MediaRouter chooser failure 'background can not be translucent: #0' seen in v0.10.0. The Cast screen now has its own opaque AppCompat-compatible theme while normal LocalWave startup remains isolated from Cast."
 }
