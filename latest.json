@@ -1,7 +1,7 @@
 {
-  "versionCode": 35,
-  "versionName": "0.13.1",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.1/LocalWave-v0.13.1-release-signed.apk",
-  "sha256": "3797d42549ed1b2c2446862fa38ac320a0d3ca2cc686524cddf3b68a4c74cb64",
-  "releaseNotes": "Selective DRY maintenance: centralizes safe local UI/search/artwork helpers while deliberately isolating fragile TV/Cast paths. Adds build-enforced protected-duplication rules with no intended playback or Whole House behavior changes."
+  "versionCode": 36,
+  "versionName": "0.13.2",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.2/LocalWave-v0.13.2-release-signed.apk",
+  "sha256": "00083b861f74583d79edf86d4df18cd7710f17751e6e41cbd2ee0beb59ec6563",
+  "releaseNotes": "Shuffle now reorders the actual play queue instead of secretly choosing random next songs. The current song/history stay anchored, upcoming tracks are shuffled visibly, and Next follows that queue on phone, Google Cast, and Samsung/DLNA/Whole House."
 }
