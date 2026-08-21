@@ -1,0 +1,113 @@
+name: Publish LocalWave v0.11.0 once
+
+on:
+  push:
+    branches: [release-feed]
+    paths:
+      - '.github/workflows/publish-v0.11.0-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      EXPECTED_SHA256: ec1158f059914e65a9be1844f2620375bec0a27e6615fb3c389530559e56d8a4
+      ARTIFACT_URL: "https://sdmntprwestus3.oaiusercontent.com/files/00000000-f520-81fd-a160-ff8ecfa51e18/raw?se=2026-08-21T19%3A15%3A29Z&sp=r&sv=2026-02-06&sr=b&scid=d45b2d28-d793-5cce-b7dc-d407be9e2a85&skoid=4b04981f-b1dc-41e0-a770-8ce0d5c8f411&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-21T14%3A04%3A33Z&ske=2026-08-22T14%3A04%3A33Z&sks=b&skv=2026-02-06&sig=Rv38MX6%2BWN09owJNbpPHkApPM1zJVDAO62tHLdTUS88%3D"
+      APK_NAME: LocalWave-v0.11.0-release-signed.apk
+      RELEASE_DIR: releases/v0.11.0
+
+    steps:
+      - name: Checkout release feed
+        uses: actions/checkout@v4
+        with:
+          ref: release-feed
+          fetch-depth: 0
+
+      - name: Download and verify signed CI artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --retry-delay 2 "$ARTIFACT_URL" -o /tmp/localwave-artifact.zip
+          rm -rf /tmp/localwave-release
+          mkdir -p /tmp/localwave-release
+          unzip -q /tmp/localwave-artifact.zip -d /tmp/localwave-release
+          test -f "/tmp/localwave-release/$APK_NAME"
+          actual="$(sha256sum "/tmp/localwave-release/$APK_NAME" | awk '{print $1}')"
+          test "$actual" = "$EXPECTED_SHA256"
+
+      - name: Publish APK first
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "LocalWave Release Bot"
+          git config user.email "75506096+livenewme@users.noreply.github.com"
+          mkdir -p "$RELEASE_DIR"
+          cp "/tmp/localwave-release/$APK_NAME" "$RELEASE_DIR/$APK_NAME"
+          printf '%s  %s\n' "$EXPECTED_SHA256" "$APK_NAME" > "$RELEASE_DIR/$APK_NAME.sha256"
+          cat > "$RELEASE_DIR/README.md" <<'EOF'
+          # LocalWave v0.11.0
+
+          Signed Android release, versionCode 30.
+
+          Adds Samsung/DLNA **Whole House** playback: select one, several, or all discovered TVs, pre-load the same local track/artwork, start the group against one monotonic deadline, and use manual/automatic drift correction while preserving the proven single-TV path.
+
+          Standard DLNA does not expose a shared hardware audio clock, so synchronization is intended for room-to-room listening rather than guaranteed sample-accurate phase alignment.
+          EOF
+          git add "$RELEASE_DIR"
+          git commit -m "Publish LocalWave v0.11.0 signed APK"
+          git push origin HEAD:release-feed
+
+      - name: Verify public APK bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          raw="https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/$RELEASE_DIR/$APK_NAME"
+          verified=0
+          for attempt in $(seq 1 12); do
+            if curl --fail --location --silent --show-error "$raw" -o /tmp/public.apk; then
+              actual="$(sha256sum /tmp/public.apk | awk '{print $1}')"
+              if [[ "$actual" == "$EXPECTED_SHA256" ]]; then
+                verified=1
+                break
+              fi
+            fi
+            sleep 5
+          done
+          test "$verified" = "1"
+
+      - name: Activate manifest last and remove publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          git pull --rebase origin release-feed
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 30,
+            "versionName": "0.11.0",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.11.0/LocalWave-v0.11.0-release-signed.apk",
+            "sha256": "ec1158f059914e65a9be1844f2620375bec0a27e6615fb3c389530559e56d8a4",
+            "releaseNotes": "Whole House Samsung/DLNA playback: select one, several, or all discovered TVs for synchronized room-to-room music, with shared-deadline starts, group controls, Resync TVs, album artwork, and conservative drift correction."
+          }
+          EOF
+          cat > README.md <<'EOF'
+          # LocalWave signed release feed
+
+          This branch is the live update feed for LocalWave.
+
+          - Current version: 0.11.0
+          - versionCode: 30
+          - Package: app.localwave.player
+          - APK SHA-256: ec1158f059914e65a9be1844f2620375bec0a27e6615fb3c389530559e56d8a4
+          - Signer certificate SHA-256: 58d7c6616a809d769b4211cb21a16d37a018a112617184e2f4093cedfeb3e4ba
+
+          v0.11.0 adds Samsung/DLNA Whole House playback on top of the device-accepted single-TV audio/artwork path. Users can select multiple discovered TVs and control them as one group with synchronized starts and drift correction. Google Cast remains available as a separate route.
+
+          Releases are published APK-first and manifest-last. The updater verifies trusted HTTPS hosts, APK SHA-256, package name, version code, and the pinned LocalWave signing certificate before installation.
+          EOF
+          rm -f .github/workflows/publish-v0.11.0-once.yml
+          git add latest.json README.md .github/workflows/publish-v0.11.0-once.yml
+          git commit -m "Activate LocalWave v0.11.0 update feed"
+          git push origin HEAD:release-feed
