@@ -1,7 +1,7 @@
 {
-  "versionCode": 22,
-  "versionName": "0.7.0",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.7.0/LocalWave-v0.7.0-release-signed.apk",
-  "sha256": "977da2218c719fc219beec3582e5757a78ed664bb8c406f8cbda63b991782049",
-  "releaseNotes": "Album Metadata Rescue replaces unreliable one-track auto-fill with full-disc matching for CD-rip folders. It ranks exact-track-count MusicBrainz releases from the complete duration sequence, shows every before/after track mapping, and applies an approved album with one Android permission prompt. Existing year, genre, and artwork are preserved and filled only when missing. Single-track search now uses duration and track-position context."
+  "versionCode": 23,
+  "versionName": "0.8.0",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.8.0/LocalWave-v0.8.0-release-signed.apk",
+  "sha256": "518f33159f45e344ac81fda2e2b574e9435538c97b606b9e6be52bf8cb5ca40d",
+  "releaseNotes": "Listening Statistics adds private, on-device monthly summaries with qualified song plays, actual audible listening time, top artists and tracks, active days, and the busiest three-hour listening window. Library Health probable-duplicate results now let you compare every matching file, play the selected copy, keep it, or delete exactly that selected file through Android's confirmation flow. Duplicate detection remains probabilistic, and LocalWave never bulk-deletes or silently chooses a winner."
 }
