@@ -1,7 +1,7 @@
 {
-  "versionCode": 21,
-  "versionName": "0.6.0",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.6.0/LocalWave-v0.6.0-release-signed.apk",
-  "sha256": "d25bdf4f32879dc7327fe8e92524310b1293022e80f84eacaeafb5f4f243ff85",
-  "releaseNotes": "Library Health adds a collection-wide score and tappable findings for missing covers, artist and album tags, probable duplicates, suspiciously low-bitrate files, and inconsistent album names. Supported MP3 metadata issues open the native editor; duplicate and bitrate findings remain review-only, and scanning never changes audio."
+  "versionCode": 22,
+  "versionName": "0.7.0",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.7.0/LocalWave-v0.7.0-release-signed.apk",
+  "sha256": "977da2218c719fc219beec3582e5757a78ed664bb8c406f8cbda63b991782049",
+  "releaseNotes": "Album Metadata Rescue replaces unreliable one-track auto-fill with full-disc matching for CD-rip folders. It ranks exact-track-count MusicBrainz releases from the complete duration sequence, shows every before/after track mapping, and applies an approved album with one Android permission prompt. Existing year, genre, and artwork are preserved and filled only when missing. Single-track search now uses duration and track-position context."
 }
