@@ -1,7 +1,7 @@
 {
-  "versionCode": 36,
-  "versionName": "0.13.2",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.2/LocalWave-v0.13.2-release-signed.apk",
-  "sha256": "00083b861f74583d79edf86d4df18cd7710f17751e6e41cbd2ee0beb59ec6563",
-  "releaseNotes": "Shuffle now reorders the actual play queue instead of secretly choosing random next songs. The current song/history stay anchored, upcoming tracks are shuffled visibly, and Next follows that queue on phone, Google Cast, and Samsung/DLNA/Whole House."
+  "versionCode": 37,
+  "versionName": "0.13.3",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.3/LocalWave-v0.13.3-release-signed.apk",
+  "sha256": "8ce3be763a977163ee580ffb04cd3d9bb4d4420f96caed01040c42db7cf9fca3",
+  "releaseNotes": "Stable Whole House synchronization: fixes false phase jumps from skipped Samsung/DLNA whole-second position ticks, filters several receiver clock observations before correcting, and uses bounded whole-group rendezvous instead of chasing noisy per-TV offsets."
 }
