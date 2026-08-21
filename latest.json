@@ -1,7 +1,7 @@
 {
-  "versionCode": 31,
-  "versionName": "0.11.1",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.11.1/LocalWave-v0.11.1-release-signed.apk",
-  "sha256": "ccda74fa3c345f5eda0057ea64a678ac97faabae8f847e34996e2ea2a66be7e2",
-  "releaseNotes": "Active Whole House synchronization: much faster Samsung/DLNA position polling and drift correction to eliminate the multi-second room-to-room delay observed in v0.11.0."
+  "versionCode": 32,
+  "versionName": "0.12.0",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.12.0/LocalWave-v0.12.0-release-signed.apk",
+  "sha256": "a985817b6d9b7f8958b55c7e8db1bf82aab1938602d51028a55e2c5a9f80f77b",
+  "releaseNotes": "Adaptive Whole House clock: automatically learns each Samsung/DLNA TV's playback latency, staggers starts, interpolates coarse receiver clocks, and uses sub-second early-TV holds to keep rooms aligned without manual calibration."
 }
