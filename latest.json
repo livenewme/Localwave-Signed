@@ -1,7 +1,7 @@
 {
-  "versionCode": 30,
-  "versionName": "0.11.0",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.11.0/LocalWave-v0.11.0-release-signed.apk",
-  "sha256": "ec1158f059914e65a9be1844f2620375bec0a27e6615fb3c389530559e56d8a4",
-  "releaseNotes": "Whole House Samsung/DLNA playback: select one, several, or all discovered TVs for synchronized room-to-room music, with shared-deadline starts, group controls, Resync TVs, album artwork, and conservative drift correction."
+  "versionCode": 31,
+  "versionName": "0.11.1",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.11.1/LocalWave-v0.11.1-release-signed.apk",
+  "sha256": "ccda74fa3c345f5eda0057ea64a678ac97faabae8f847e34996e2ea2a66be7e2",
+  "releaseNotes": "Active Whole House synchronization: much faster Samsung/DLNA position polling and drift correction to eliminate the multi-second room-to-room delay observed in v0.11.0."
 }
