@@ -1,7 +1,7 @@
 {
-  "versionCode": 41,
-  "versionName": "0.13.7",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.7/LocalWave-v0.13.7-release-signed.apk",
-  "sha256": "f8ba902e1a282aa32eb80b70d680942c8c2b3b32dd7411ba032ef864b5726fc1",
-  "releaseNotes": "Whole House manual calibration: choose a baseline TV, inspect relative receiver-clock timing, and persist per-TV Advance/Delay trims in 50 ms and 5 ms steps. Apply & Resync makes the timing bias effective while automatic sync respects the calibration."
+  "versionCode": 42,
+  "versionName": "0.13.8",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.8/LocalWave-v0.13.8-release-signed.apk",
+  "sha256": "cf85af909f429202c5a5daf99056e5758fdfde19bce6ad77c402901d5bf296b8",
+  "releaseNotes": "Manual TV calibration now updates measured Clock Δ live. An Automatic correction toggle keeps measurement active while blocking automatic audible drift rendezvous; the first manual Advance/Delay edit switches automatic correction off."
 }
