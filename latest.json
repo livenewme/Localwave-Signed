@@ -1,7 +1,7 @@
 {
-  "versionCode": 42,
-  "versionName": "0.13.8",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.8/LocalWave-v0.13.8-release-signed.apk",
-  "sha256": "cf85af909f429202c5a5daf99056e5758fdfde19bce6ad77c402901d5bf296b8",
-  "releaseNotes": "Manual TV calibration now updates measured Clock Δ live. An Automatic correction toggle keeps measurement active while blocking automatic audible drift rendezvous; the first manual Advance/Delay edit switches automatic correction off."
+  "versionCode": 43,
+  "versionName": "0.13.9",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.9/LocalWave-v0.13.9-release-signed.apk",
+  "sha256": "67b669c42227d796a718696a888324920d9fbdbf50ae96a75b0503d179187acb",
+  "releaseNotes": "Whole House automatic synchronization is now a conservative annealed calibration cycle: align timestamps, start together, collect progressively stricter delay points, make at most one justified correction, verify from scratch, then leave playback alone."
 }
