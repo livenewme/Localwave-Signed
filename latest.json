@@ -1,7 +1,7 @@
 {
-  "versionCode": 39,
-  "versionName": "0.13.5",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.5/LocalWave-v0.13.5-release-signed.apk",
-  "sha256": "9e760b572b6ea56ffcac65b7354e54557e2238bdec36576976292dcd97e2933b",
-  "releaseNotes": "Whole House sync liveness fix: keeps refined clocks as the preferred path, adds a conservative coarse timing fallback, and guarantees bounded rendezvous instead of remaining on Measuring TV clocks forever."
+  "versionCode": 40,
+  "versionName": "0.13.6",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.6/LocalWave-v0.13.6-release-signed.apk",
+  "sha256": "08079a58e123ffa1c1e3aa7a7efd799a236abf896eb6b6fe6534c715bf0aec16",
+  "releaseNotes": "Whole House steady-state drift fix: Samsung whole-second position reports are combined as interval constraints, continuously disciplining TV software clocks and triggering bounded rendezvous before a good ~200 ms start can slowly drift beyond a second."
 }
