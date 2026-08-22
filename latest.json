@@ -1,7 +1,7 @@
 {
-  "versionCode": 44,
-  "versionName": "0.13.10",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.10/LocalWave-v0.13.10-release-signed.apk",
-  "sha256": "b5a698cf2133f709b0f1d6f86810af08e291144197132d6335e35a34745f97b2",
-  "releaseNotes": "Adds Roku playback through the LocalWave Receiver app using Roku's supported DIAL launch path, while preserving Samsung/DLNA synchronization and TV startup isolation."
+  "versionCode": 45,
+  "versionName": "0.13.11",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.11/LocalWave-v0.13.11-release-signed.apk",
+  "sha256": "e26ea5c753a68830c1f8ab76eff23c80be865f1bb09a291d22d4ad786988b307",
+  "releaseNotes": "Adds Roku Setup inside LocalWave. The Roku Receiver is bundled in the app, can be exported as a ready-to-sideload ZIP, and the setup screen provides Developer Mode instructions, Roku discovery/IP help, and a direct link to the Roku installer."
 }
