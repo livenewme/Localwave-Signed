@@ -1,0 +1,75 @@
+name: Publish v0.13.12 once
+
+on:
+  push:
+    branches:
+      - release-feed
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    env:
+      EXPECTED_SHA256: 22a987077eb6be9c495e4162cad01ccd0a8bd6b9da0ffcc8bec9b13987a46738
+      EXPECTED_SIZE: '2913789'
+      ARTIFACT_URL: 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-a930-81fd-a43e-203bcb6e6650/raw?se=2026-08-22T05%3A29%3A28Z&sp=r&sv=2026-02-06&sr=b&scid=3e168bcf-3a17-5b29-909f-68ab98fc9933&skoid=4b04981f-b1dc-41e0-a770-8ce0d5c8f411&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-22T00%3A42%3A02Z&ske=2026-08-23T00%3A42%3A02Z&sks=b&skv=2026-02-06&sig=/jXkBTaHCWAeZsGdBuzKDbi0A/4fCRF8OOqZqBtwYQU%3D'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release-feed
+          fetch-depth: 0
+      - name: Download and verify exact CI candidate
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 "$ARTIFACT_URL" -o /tmp/localwave-v01312.zip
+          mkdir -p /tmp/localwave-v01312
+          unzip -q /tmp/localwave-v01312.zip -d /tmp/localwave-v01312
+          apk=/tmp/localwave-v01312/LocalWave-v0.13.12-release-signed.apk
+          test -f "$apk"
+          test "$(stat -c %s "$apk")" = "$EXPECTED_SIZE"
+          echo "$EXPECTED_SHA256  $apk" | sha256sum -c -
+      - name: Publish APK first
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          current = json.loads(Path('latest.json').read_text())
+          if current.get('versionCode') != 45:
+              raise SystemExit(f"Refusing to advance from unexpected versionCode {current.get('versionCode')}")
+          if Path('releases/v0.13.12').exists():
+              raise SystemExit('Refusing to overwrite existing v0.13.12 release directory')
+          PY
+          mkdir -p releases/v0.13.12
+          cp /tmp/localwave-v01312/LocalWave-v0.13.12-release-signed.apk releases/v0.13.12/
+          printf '%s  %s\n' "$EXPECTED_SHA256" 'LocalWave-v0.13.12-release-signed.apk' > releases/v0.13.12/LocalWave-v0.13.12-release-signed.apk.sha256
+          cat > releases/v0.13.12/README.md <<'EOF'
+          # LocalWave v0.13.12
+
+          Adds album-art-driven Now Playing theming and live Smart Playlists for Recently Added, Most Played, Recently Played, Never Played, and Liked tracks.
+          EOF
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add releases/v0.13.12
+          git commit -m 'publish LocalWave v0.13.12 signed APK'
+          git push origin HEAD:release-feed
+      - name: Advance updater manifest last and remove publisher
+        run: |
+          set -euo pipefail
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 46,
+            "versionName": "0.13.12",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.12/LocalWave-v0.13.12-release-signed.apk",
+            "sha256": "22a987077eb6be9c495e4162cad01ccd0a8bd6b9da0ffcc8bec9b13987a46738",
+            "releaseNotes": "Adds artwork-driven Now Playing theming plus live Smart Playlists: Recently Added, Most Played, Recently Played, Never Played, and Liked. Smart lists are generated from your local library and private LocalWave history without copying audio files."
+          }
+          EOF
+          rm -f .github/workflows/publish-v01312-once.yml
+          rm -f .publish-v01312-trigger
+          git add -A
+          git commit -m 'advance LocalWave updater to v0.13.12'
+          git push origin HEAD:release-feed
