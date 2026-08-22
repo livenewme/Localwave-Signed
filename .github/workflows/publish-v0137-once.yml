@@ -1,0 +1,90 @@
+name: Publish LocalWave v0.13.7 once
+
+on:
+  push:
+    branches: [release-feed]
+    paths:
+      - '.publish-v0137-trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release-feed
+          fetch-depth: 0
+      - name: Download and verify exact signed CI candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --retry-delay 1 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-8b84-81fd-a1be-3b705463e0cd/raw?se=2026-08-22T02%3A20%3A45Z&sp=r&sv=2026-02-06&sr=b&scid=9723e0bf-e175-5941-ac6f-5a34a529b11f&skoid=4b04981f-b1dc-41e0-a770-8ce0d5c8f411&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-22T00%3A40%3A45Z&ske=2026-08-23T00%3A40%3A45Z&sks=b&skv=2026-02-06&sig=FNKjgVjwOu/CaMU5il4GLGjWotVcRkvpExv7zeQO2/Y%3D' -o /tmp/localwave-v0137.zip
+          rm -rf /tmp/lw137 && mkdir -p /tmp/lw137
+          unzip -q /tmp/localwave-v0137.zip -d /tmp/lw137
+          apk=/tmp/lw137/LocalWave-v0.13.7-release-signed.apk
+          test -f "$apk"
+          test "$(stat -c %s "$apk")" = '2888933'
+          echo 'f8ba902e1a282aa32eb80b70d680942c8c2b3b32dd7411ba032ef864b5726fc1  /tmp/lw137/LocalWave-v0.13.7-release-signed.apk' | sha256sum -c -
+          test "$(git hash-object "$apk")" = 'a5ffcc1a3683688aafa97eae29ca8717e849edcb'
+      - name: Publish APK first
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'LocalWave Release Bot'
+          git config user.email '75506096+livenewme@users.noreply.github.com'
+          mkdir -p releases/v0.13.7
+          cp /tmp/lw137/LocalWave-v0.13.7-release-signed.apk releases/v0.13.7/
+          printf '%s  %s\n' 'f8ba902e1a282aa32eb80b70d680942c8c2b3b32dd7411ba032ef864b5726fc1' 'LocalWave-v0.13.7-release-signed.apk' > releases/v0.13.7/LocalWave-v0.13.7-release-signed.apk.sha256
+          cat > releases/v0.13.7/README.md <<'EOF'
+          # LocalWave v0.13.7
+
+          Signed Android release for manual Whole House TV calibration.
+
+          Package: `app.localwave.player`  
+          versionCode: `41`  
+          SHA-256: `f8ba902e1a282aa32eb80b70d680942c8c2b3b32dd7411ba032ef864b5726fc1`
+          EOF
+          git add releases/v0.13.7
+          git commit -m 'Publish signed LocalWave v0.13.7 APK'
+          git push origin HEAD:release-feed
+      - name: Advance updater manifest last
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 41,
+            "versionName": "0.13.7",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.7/LocalWave-v0.13.7-release-signed.apk",
+            "sha256": "f8ba902e1a282aa32eb80b70d680942c8c2b3b32dd7411ba032ef864b5726fc1",
+            "releaseNotes": "Whole House manual calibration: choose a baseline TV, inspect relative receiver-clock timing, and persist per-TV Advance/Delay trims in 50 ms and 5 ms steps. Apply & Resync makes the timing bias effective while automatic sync respects the calibration."
+          }
+          EOF
+          cat > README.md <<'EOF'
+          # LocalWave signed release feed
+
+          This branch is the live update feed for LocalWave.
+
+          - Current version: 0.13.7
+          - versionCode: 41
+          - Package: app.localwave.player
+          - APK SHA-256: f8ba902e1a282aa32eb80b70d680942c8c2b3b32dd7411ba032ef864b5726fc1
+          - Signer certificate SHA-256: 58d7c6616a809d769b4211cb21a16d37a018a112617184e2f4093cedfeb3e4ba
+
+          v0.13.7 adds persistent manual Whole House calibration with baseline-relative receiver timing and 50 ms / 5 ms Advance/Delay trims.
+
+          Releases are published APK-first and manifest-last. The updater verifies trusted HTTPS hosts, APK SHA-256, package name, version code, and the pinned LocalWave signing certificate before installation.
+          EOF
+          git add latest.json README.md
+          git commit -m 'Advance LocalWave updater to v0.13.7'
+          git push origin HEAD:release-feed
+      - name: Remove one-shot publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .publish-v0137-trigger .github/workflows/publish-v0137-once.yml
+          git commit -m 'Remove v0.13.7 one-shot publisher'
+          git push origin HEAD:release-feed
