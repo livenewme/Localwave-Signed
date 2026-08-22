@@ -1,0 +1,73 @@
+name: Publish LocalWave v0.13.6
+
+on:
+  push:
+    branches: [release-feed]
+    paths:
+      - '.github/workflows/publish-v0.13.6.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release-feed
+          fetch-depth: 0
+      - name: Download and verify exact signed candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://sdmntprwestus3.oaiusercontent.com/files/00000000-3518-81fd-adf1-25067a8b5a98/raw?se=2026-08-22T01%3A57%3A26Z&sp=r&sv=2026-02-06&sr=b&scid=1a8ff82d-811f-5d5a-a842-1b3b09497f25&skoid=4b04981f-b1dc-41e0-a770-8ce0d5c8f411&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-22T00%3A36%3A21Z&ske=2026-08-23T00%3A36%3A21Z&sks=b&skv=2026-02-06&sig=x2lRYk8vSBYAP9G/CTiCSDm3%2B2wESDMzlrnTDJ5wuWQ%3D'
+          curl -fL --retry 3 --retry-delay 1 "$url" -o /tmp/candidate.zip
+          rm -rf /tmp/candidate && mkdir /tmp/candidate
+          unzip -q /tmp/candidate.zip -d /tmp/candidate
+          apk="$(find /tmp/candidate -maxdepth 2 -type f -name '*.apk' | head -1)"
+          test -n "$apk"
+          test "$(stat -c %s "$apk")" = '2888933'
+          printf '%s  %s\n' '08079a58e123ffa1c1e3aa7a7efd799a236abf896eb6b6fe6534c715bf0aec16' "$apk" | sha256sum -c -
+          mkdir -p releases/v0.13.6
+          cp "$apk" releases/v0.13.6/LocalWave-v0.13.6-release-signed.apk
+          printf '%s  %s\n' '08079a58e123ffa1c1e3aa7a7efd799a236abf896eb6b6fe6534c715bf0aec16' 'LocalWave-v0.13.6-release-signed.apk' > releases/v0.13.6/LocalWave-v0.13.6-release-signed.apk.sha256
+          cat > releases/v0.13.6/README.md <<'EOF'
+          # LocalWave v0.13.6
+
+          Signed Android release for versionCode 40.
+
+          Whole House steady-state synchronization now derives receiver phase from overlapping coarse RelTime intervals so a good initial sync can be continuously disciplined even when exact refined boundary events are unavailable.
+          EOF
+      - name: Publish APK first
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'LocalWave Release Bot'
+          git config user.email '75506096+livenewme@users.noreply.github.com'
+          git add releases/v0.13.6
+          git commit -m 'Publish LocalWave v0.13.6 signed APK'
+          git push origin HEAD:release-feed
+      - name: Advance updater manifest last
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 40,
+            "versionName": "0.13.6",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.6/LocalWave-v0.13.6-release-signed.apk",
+            "sha256": "08079a58e123ffa1c1e3aa7a7efd799a236abf896eb6b6fe6534c715bf0aec16",
+            "releaseNotes": "Whole House steady-state drift fix: Samsung whole-second position reports are combined as interval constraints, continuously disciplining TV software clocks and triggering bounded rendezvous before a good ~200 ms start can slowly drift beyond a second."
+          }
+          EOF
+          git add latest.json
+          git commit -m 'Select LocalWave v0.13.6 as latest'
+          git push origin HEAD:release-feed
+      - name: Remove one-shot publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/publish-v0.13.6.yml
+          git commit -m 'Remove temporary v0.13.6 publisher'
+          git push origin HEAD:release-feed
