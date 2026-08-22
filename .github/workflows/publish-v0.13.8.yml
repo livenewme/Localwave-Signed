@@ -1,0 +1,83 @@
+name: Publish LocalWave v0.13.8
+
+on:
+  push:
+    branches:
+      - release-feed
+    paths:
+      - .github/publish-v0.13.8-trigger
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    env:
+      ARTIFACT_URL: 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-da1c-81fd-8960-ce55cbf7af25/raw?se=2026-08-22T02%3A42%3A04Z&sp=r&sv=2026-02-06&sr=b&scid=eb531449-79e1-5295-b2f6-d0562db79e47&skoid=4b04981f-b1dc-41e0-a770-8ce0d5c8f411&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-22T00%3A50%3A25Z&ske=2026-08-23T00%3A50%3A25Z&sks=b&skv=2026-02-06&sig=bGYk62S1twHfwXH3lhGX%2BJJznTXO5SkWzxDsM0JSgjM%3D'
+      EXPECTED_SHA256: cf85af909f429202c5a5daf99056e5758fdfde19bce6ad77c402901d5bf296b8
+      EXPECTED_SIZE: '2888933'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release-feed
+          fetch-depth: 0
+      - name: Download and verify exact CI artifact
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 "$ARTIFACT_URL" -o /tmp/localwave-v0138.zip
+          rm -rf /tmp/localwave-v0138
+          mkdir -p /tmp/localwave-v0138
+          unzip -q /tmp/localwave-v0138.zip -d /tmp/localwave-v0138
+          apk=/tmp/localwave-v0138/LocalWave-v0.13.8-release-signed.apk
+          test -f "$apk"
+          test "$(stat -c %s "$apk")" = "$EXPECTED_SIZE"
+          actual="$(sha256sum "$apk" | awk '{print $1}')"
+          test "$actual" = "$EXPECTED_SHA256"
+      - name: Publish APK first
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p releases/v0.13.8
+          cp /tmp/localwave-v0138/LocalWave-v0.13.8-release-signed.apk releases/v0.13.8/LocalWave-v0.13.8-release-signed.apk
+          printf '%s  %s\n' "$EXPECTED_SHA256" 'LocalWave-v0.13.8-release-signed.apk' > releases/v0.13.8/LocalWave-v0.13.8-release-signed.apk.sha256
+          cat > releases/v0.13.8/README.md <<'EOF'
+          # LocalWave v0.13.8
+
+          Live manual Whole House calibration with continuously refreshed receiver-clock differences and an explicit Automatic correction toggle. Manual Advance/Delay edits automatically enter manual correction mode.
+          EOF
+          git add releases/v0.13.8
+          git commit -m "Publish LocalWave v0.13.8 APK"
+          git push origin HEAD:release-feed
+      - name: Advance updater manifest last and remove publisher
+        run: |
+          set -euo pipefail
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 42,
+            "versionName": "0.13.8",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.8/LocalWave-v0.13.8-release-signed.apk",
+            "sha256": "cf85af909f429202c5a5daf99056e5758fdfde19bce6ad77c402901d5bf296b8",
+            "releaseNotes": "Manual TV calibration now updates measured Clock Δ live. An Automatic correction toggle keeps measurement active while blocking automatic audible drift rendezvous; the first manual Advance/Delay edit switches automatic correction off."
+          }
+          EOF
+          cat > README.md <<'EOF'
+          # LocalWave signed release feed
+
+          This branch is the live update feed for LocalWave.
+
+          - Current version: 0.13.8
+          - versionCode: 42
+          - Package: app.localwave.player
+          - APK SHA-256: cf85af909f429202c5a5daf99056e5758fdfde19bce6ad77c402901d5bf296b8
+          - Signer certificate SHA-256: 58d7c6616a809d769b4211cb21a16d37a018a112617184e2f4093cedfeb3e4ba
+
+          v0.13.8 makes Whole House manual calibration live and adds explicit control over automatic audible correction while retaining measurement and manual Apply & Resync.
+
+          Releases are published APK-first and manifest-last. The updater verifies trusted HTTPS hosts, APK SHA-256, package name, version code, and the pinned LocalWave signing certificate before installation.
+          EOF
+          rm -f .github/workflows/publish-v0.13.8.yml .github/publish-v0.13.8-trigger
+          git add -A
+          git commit -m "Advance LocalWave update feed to v0.13.8"
+          git push origin HEAD:release-feed
