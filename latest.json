@@ -1,7 +1,7 @@
 {
-  "versionCode": 38,
-  "versionName": "0.13.4",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.4/LocalWave-v0.13.4-release-signed.apk",
-  "sha256": "980a150a4381fddabb7eda2940e494e2716f62639e6e9e833d5319cd23edadfd",
-  "releaseNotes": "Stream-gated Whole House starts: gives each Samsung/DLNA TV a controlled prebuffer window before its learned staggered Play command, then streams normally while the stable v0.13.3 clock/rendezvous controller handles residual drift."
+  "versionCode": 39,
+  "versionName": "0.13.5",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.5/LocalWave-v0.13.5-release-signed.apk",
+  "sha256": "9e760b572b6ea56ffcac65b7354e54557e2238bdec36576976292dcd97e2933b",
+  "releaseNotes": "Whole House sync liveness fix: keeps refined clocks as the preferred path, adds a conservative coarse timing fallback, and guarantees bounded rendezvous instead of remaining on Measuring TV clocks forever."
 }
