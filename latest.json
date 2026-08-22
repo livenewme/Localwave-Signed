@@ -1,7 +1,7 @@
 {
-  "versionCode": 43,
-  "versionName": "0.13.9",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.9/LocalWave-v0.13.9-release-signed.apk",
-  "sha256": "67b669c42227d796a718696a888324920d9fbdbf50ae96a75b0503d179187acb",
-  "releaseNotes": "Whole House automatic synchronization is now a conservative annealed calibration cycle: align timestamps, start together, collect progressively stricter delay points, make at most one justified correction, verify from scratch, then leave playback alone."
+  "versionCode": 44,
+  "versionName": "0.13.10",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.10/LocalWave-v0.13.10-release-signed.apk",
+  "sha256": "b5a698cf2133f709b0f1d6f86810af08e291144197132d6335e35a34745f97b2",
+  "releaseNotes": "Adds Roku playback through the LocalWave Receiver app using Roku's supported DIAL launch path, while preserving Samsung/DLNA synchronization and TV startup isolation."
 }
