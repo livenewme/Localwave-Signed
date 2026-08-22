@@ -1,7 +1,7 @@
 {
-  "versionCode": 48,
-  "versionName": "0.13.14",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.14/LocalWave-v0.13.14-release-signed.apk",
-  "sha256": "66fe96cd8a0ec866052d11755e2a43c4e617fb32c54fedbf84a0f8ec00e79dee",
-  "releaseNotes": "Adds persistent playback-session restore so LocalWave can recover your queue, current track, position, play/pause state, shuffle and repeat after process recreation. Also backfills the in-app changelog from v0.13.10 through v0.13.14 and adds a maintainable recent-release changelog layer."
+  "versionCode": 49,
+  "versionName": "0.13.15",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.15/LocalWave-v0.13.15-release-signed.apk",
+  "sha256": "bee18edeee865e07f1ececbc02667067f47a21af34becff75c1f64fda2d8db53",
+  "releaseNotes": "Adds swipe track navigation in full Now Playing: swipe left on the album artwork for Next and swipe right for Previous. Gesture thresholds reduce accidental skips, and the recent changelog is updated through v0.13.15."
 }
