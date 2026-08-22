@@ -1,7 +1,7 @@
 {
-  "versionCode": 47,
-  "versionName": "0.13.13",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.13/LocalWave-v0.13.13-release-signed.apk",
-  "sha256": "6c8c49f6a45e6b1adb0668d7bf1f760f40e67c74c23956b396399f5f41e2f908",
-  "releaseNotes": "Adds Settings > Themes with several preset palettes and Match song, which follows the current album artwork. Also isolates visual rendering behind ThemeRenderer and gives the Smart button more room."
+  "versionCode": 48,
+  "versionName": "0.13.14",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.14/LocalWave-v0.13.14-release-signed.apk",
+  "sha256": "66fe96cd8a0ec866052d11755e2a43c4e617fb32c54fedbf84a0f8ec00e79dee",
+  "releaseNotes": "Adds persistent playback-session restore so LocalWave can recover your queue, current track, position, play/pause state, shuffle and repeat after process recreation. Also backfills the in-app changelog from v0.13.10 through v0.13.14 and adds a maintainable recent-release changelog layer."
 }
