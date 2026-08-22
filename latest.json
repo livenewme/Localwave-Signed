@@ -1,7 +1,7 @@
 {
-  "versionCode": 46,
-  "versionName": "0.13.12",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.12/LocalWave-v0.13.12-release-signed.apk",
-  "sha256": "22a987077eb6be9c495e4162cad01ccd0a8bd6b9da0ffcc8bec9b13987a46738",
-  "releaseNotes": "Adds artwork-driven Now Playing theming plus live Smart Playlists: Recently Added, Most Played, Recently Played, Never Played, and Liked. Smart lists are generated from your local library and private LocalWave history without copying audio files."
+  "versionCode": 47,
+  "versionName": "0.13.13",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.13/LocalWave-v0.13.13-release-signed.apk",
+  "sha256": "6c8c49f6a45e6b1adb0668d7bf1f760f40e67c74c23956b396399f5f41e2f908",
+  "releaseNotes": "Adds Settings > Themes with several preset palettes and Match song, which follows the current album artwork. Also isolates visual rendering behind ThemeRenderer and gives the Smart button more room."
 }
