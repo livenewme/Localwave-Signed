@@ -1,0 +1,73 @@
+name: Publish LocalWave v0.13.5
+
+on:
+  push:
+    branches: [release-feed]
+    paths:
+      - '.github/workflows/publish-v0.13.5.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release-feed
+          fetch-depth: 0
+      - name: Download and verify exact signed candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://sdmntprwestus3.oaiusercontent.com/files/00000000-45d4-81fd-9247-40e245a786e1/raw?se=2026-08-22T01%3A30%3A59Z&sp=r&sv=2026-02-06&sr=b&scid=b1c9edf4-65fd-5af5-9b40-ff7ccf4c095a&skoid=4b04981f-b1dc-41e0-a770-8ce0d5c8f411&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-22T00%3A46%3A20Z&ske=2026-08-23T00%3A46%3A20Z&sks=b&skv=2026-02-06&sig=n3lMTfgx2Mw%2BjrgESU2yBP7sjSSPXW3sqEscKqJDYPA%3D'
+          curl -fL --retry 3 --retry-delay 1 "$url" -o /tmp/candidate.zip
+          rm -rf /tmp/candidate && mkdir /tmp/candidate
+          unzip -q /tmp/candidate.zip -d /tmp/candidate
+          apk="$(find /tmp/candidate -maxdepth 2 -type f -name '*.apk' | head -1)"
+          test -n "$apk"
+          test "$(stat -c %s "$apk")" = '2888933'
+          printf '%s  %s\n' '9e760b572b6ea56ffcac65b7354e54557e2238bdec36576976292dcd97e2933b' "$apk" | sha256sum -c -
+          mkdir -p releases/v0.13.5
+          cp "$apk" releases/v0.13.5/LocalWave-v0.13.5-release-signed.apk
+          printf '%s  %s\n' '9e760b572b6ea56ffcac65b7354e54557e2238bdec36576976292dcd97e2933b' 'LocalWave-v0.13.5-release-signed.apk' > releases/v0.13.5/LocalWave-v0.13.5-release-signed.apk.sha256
+          cat > releases/v0.13.5/README.md <<'EOF'
+          # LocalWave v0.13.5
+
+          Signed Android release for versionCode 39.
+
+          Whole House synchronization liveness fix: refined TV clocks remain preferred, with a conservative coarse fallback and bounded timeout so Measuring TV clocks cannot remain inert forever.
+          EOF
+      - name: Publish APK first
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'LocalWave Release Bot'
+          git config user.email '75506096+livenewme@users.noreply.github.com'
+          git add releases/v0.13.5
+          git commit -m 'Publish LocalWave v0.13.5 signed APK'
+          git push origin HEAD:release-feed
+      - name: Advance updater manifest last
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 39,
+            "versionName": "0.13.5",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.5/LocalWave-v0.13.5-release-signed.apk",
+            "sha256": "9e760b572b6ea56ffcac65b7354e54557e2238bdec36576976292dcd97e2933b",
+            "releaseNotes": "Whole House sync liveness fix: keeps refined clocks as the preferred path, adds a conservative coarse timing fallback, and guarantees bounded rendezvous instead of remaining on Measuring TV clocks forever."
+          }
+          EOF
+          git add latest.json
+          git commit -m 'Select LocalWave v0.13.5 as latest'
+          git push origin HEAD:release-feed
+      - name: Remove one-shot publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/publish-v0.13.5.yml
+          git commit -m 'Remove temporary v0.13.5 publisher'
+          git push origin HEAD:release-feed
