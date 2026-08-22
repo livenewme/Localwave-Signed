@@ -1,0 +1,78 @@
+name: Publish v0.13.11 once
+
+on:
+  push:
+    branches:
+      - release-feed
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    env:
+      EXPECTED_SHA256: e26ea5c753a68830c1f8ab76eff23c80be865f1bb09a291d22d4ad786988b307
+      EXPECTED_SIZE: '2913733'
+      ARTIFACT_URL: 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-0240-81fd-9829-92df48529756/raw?se=2026-08-22T04%3A58%3A38Z&sp=r&sv=2026-02-06&sr=b&scid=6445f998-cb0a-536e-9180-e70c294f9a34&skoid=4b04981f-b1dc-41e0-a770-8ce0d5c8f411&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-22T00%3A42%3A58Z&ske=2026-08-23T00%3A42%3A58Z&sks=b&skv=2026-02-06&sig=zHUIIOpv%2BqAp%2BEQG11Phezi6EhHKEB/NVLiLXutpKok%3D'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release-feed
+          fetch-depth: 0
+
+      - name: Download and verify exact CI candidate
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 "$ARTIFACT_URL" -o /tmp/localwave-v01311.zip
+          mkdir -p /tmp/localwave-v01311
+          unzip -q /tmp/localwave-v01311.zip -d /tmp/localwave-v01311
+          apk=/tmp/localwave-v01311/LocalWave-v0.13.11-release-signed.apk
+          test -f "$apk"
+          test "$(stat -c %s "$apk")" = "$EXPECTED_SIZE"
+          echo "$EXPECTED_SHA256  $apk" | sha256sum -c -
+
+      - name: Publish APK first
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          current = json.loads(Path('latest.json').read_text())
+          if current.get('versionCode') != 44:
+              raise SystemExit(f"Refusing to advance from unexpected versionCode {current.get('versionCode')}")
+          if Path('releases/v0.13.11').exists():
+              raise SystemExit('Refusing to overwrite existing v0.13.11 release directory')
+          PY
+          mkdir -p releases/v0.13.11
+          cp /tmp/localwave-v01311/LocalWave-v0.13.11-release-signed.apk releases/v0.13.11/
+          printf '%s  %s\n' "$EXPECTED_SHA256" 'LocalWave-v0.13.11-release-signed.apk' > releases/v0.13.11/LocalWave-v0.13.11-release-signed.apk.sha256
+          cat > releases/v0.13.11/README.md <<'EOF'
+          # LocalWave v0.13.11
+
+          Adds a guided Roku Setup flow inside LocalWave and bundles the LocalWave Roku Receiver so users can export the required sideload ZIP directly from the Android app.
+          EOF
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add releases/v0.13.11
+          git commit -m 'publish LocalWave v0.13.11 signed APK'
+          git push origin HEAD:release-feed
+
+      - name: Advance updater manifest last and remove publisher
+        run: |
+          set -euo pipefail
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 45,
+            "versionName": "0.13.11",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.11/LocalWave-v0.13.11-release-signed.apk",
+            "sha256": "e26ea5c753a68830c1f8ab76eff23c80be865f1bb09a291d22d4ad786988b307",
+            "releaseNotes": "Adds Roku Setup inside LocalWave. The Roku Receiver is bundled in the app, can be exported as a ready-to-sideload ZIP, and the setup screen provides Developer Mode instructions, Roku discovery/IP help, and a direct link to the Roku installer."
+          }
+          EOF
+          rm -f .github/workflows/publish-v01311-once.yml
+          rm -f .publish-v01311-trigger
+          git add -A
+          git commit -m 'advance LocalWave updater to v0.13.11'
+          git push origin HEAD:release-feed
