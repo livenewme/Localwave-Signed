@@ -1,0 +1,75 @@
+name: Publish v0.13.16 once
+
+on:
+  push:
+    branches:
+      - release-feed
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    env:
+      EXPECTED_SHA256: 9836b61d710423637a4bbc9fa99e4df339841d835d3a722776ae0d3a68c94348
+      EXPECTED_SIZE: '2934380'
+      ARTIFACT_URL: 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-d25c-81fd-92e4-9b9357364289/raw?se=2026-08-23T01%3A34%3A58Z&sp=r&sv=2026-02-06&sr=b&scid=1af7f5d5-b687-5baa-8ba5-eadef7e37644&skoid=456594af-533f-44ef-9bdc-35ea2f9daee5&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-22T23%3A42%3A51Z&ske=2026-08-23T23%3A42%3A51Z&sks=b&skv=2026-02-06&sig=Cu9tOg1eUD4bl9YLXPmqGYzg9NH65%2BEM4g1k%2BKh47YI%3D'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release-feed
+          fetch-depth: 0
+      - name: Download and verify exact CI candidate
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 "$ARTIFACT_URL" -o /tmp/localwave-v01316.zip
+          mkdir -p /tmp/localwave-v01316
+          unzip -q /tmp/localwave-v01316.zip -d /tmp/localwave-v01316
+          apk=/tmp/localwave-v01316/LocalWave-v0.13.16-release-signed.apk
+          test -f "$apk"
+          test "$(stat -c %s "$apk")" = "$EXPECTED_SIZE"
+          echo "$EXPECTED_SHA256  $apk" | sha256sum -c -
+      - name: Publish APK first
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          current = json.loads(Path('latest.json').read_text())
+          if current.get('versionCode') != 49:
+              raise SystemExit(f"Refusing to advance from unexpected versionCode {current.get('versionCode')}")
+          if Path('releases/v0.13.16').exists():
+              raise SystemExit('Refusing to overwrite existing v0.13.16 release directory')
+          PY
+          mkdir -p releases/v0.13.16
+          cp /tmp/localwave-v01316/LocalWave-v0.13.16-release-signed.apk releases/v0.13.16/
+          printf '%s  %s\n' "$EXPECTED_SHA256" 'LocalWave-v0.13.16-release-signed.apk' > releases/v0.13.16/LocalWave-v0.13.16-release-signed.apk.sha256
+          cat > releases/v0.13.16/README.md <<'EOF'
+          # LocalWave v0.13.16
+
+          Polishes Album Metadata Rescue into a clearer review queue with stronger issue states and safer, more explicit review guidance while preserving the existing whole-disc matching and write safeguards.
+          EOF
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add releases/v0.13.16
+          git commit -m 'publish LocalWave v0.13.16 signed APK'
+          git push origin HEAD:release-feed
+      - name: Advance updater manifest last and remove publisher
+        run: |
+          set -euo pipefail
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 50,
+            "versionName": "0.13.16",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.16/LocalWave-v0.13.16-release-signed.apk",
+            "sha256": "9836b61d710423637a4bbc9fa99e4df339841d835d3a722776ae0d3a68c94348",
+            "releaseNotes": "Polishes Album Metadata Rescue into a clearer review queue with NEEDS ATTENTION / TAGS PRESENT states, issue and track counts, safer explanatory guidance, and an updated changelog while preserving existing whole-disc matching and write safeguards."
+          }
+          EOF
+          rm -f .github/workflows/publish-v01316-once.yml
+          rm -f .publish-v01316-trigger
+          git add -A
+          git commit -m 'advance LocalWave updater to v0.13.16'
+          git push origin HEAD:release-feed
