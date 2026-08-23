@@ -1,7 +1,7 @@
 {
-  "versionCode": 49,
-  "versionName": "0.13.15",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.15/LocalWave-v0.13.15-release-signed.apk",
-  "sha256": "bee18edeee865e07f1ececbc02667067f47a21af34becff75c1f64fda2d8db53",
-  "releaseNotes": "Adds swipe track navigation in full Now Playing: swipe left on the album artwork for Next and swipe right for Previous. Gesture thresholds reduce accidental skips, and the recent changelog is updated through v0.13.15."
+  "versionCode": 50,
+  "versionName": "0.13.16",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.16/LocalWave-v0.13.16-release-signed.apk",
+  "sha256": "9836b61d710423637a4bbc9fa99e4df339841d835d3a722776ae0d3a68c94348",
+  "releaseNotes": "Polishes Album Metadata Rescue into a clearer review queue with NEEDS ATTENTION / TAGS PRESENT states, issue and track counts, safer explanatory guidance, and an updated changelog while preserving existing whole-disc matching and write safeguards."
 }
