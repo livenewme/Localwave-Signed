@@ -1,7 +1,7 @@
 {
-  "versionCode": 50,
-  "versionName": "0.13.16",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.16/LocalWave-v0.13.16-release-signed.apk",
-  "sha256": "9836b61d710423637a4bbc9fa99e4df339841d835d3a722776ae0d3a68c94348",
-  "releaseNotes": "Polishes Album Metadata Rescue into a clearer review queue with NEEDS ATTENTION / TAGS PRESENT states, issue and track counts, safer explanatory guidance, and an updated changelog while preserving existing whole-disc matching and write safeguards."
+  "versionCode": 51,
+  "versionName": "0.13.17",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.17/LocalWave-v0.13.17-release-signed.apk",
+  "sha256": "58cb6c49ce6b229354da3fe28efadd2bc0bf6825ef174b73471557c177cb7400",
+  "releaseNotes": "Adds Android Auto support with car-display browsing for Songs, Albums, Artists, Playlists, and Liked tracks, plus Play/Pause, Previous/Next, Seek, metadata, queue-aware playback, and voice search while preserving Cast/DLNA/Roku isolation."
 }
