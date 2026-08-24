@@ -1,7 +1,7 @@
 {
-  "versionCode": 55,
-  "versionName": "0.13.21",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.21/LocalWave-v0.13.21-release-signed.apk",
-  "sha256": "f5fabd8df728ff3da25a0e0ea71c7300817604325d3b4c846dabed27f614b852",
-  "releaseNotes": "Adds a Roku-inspired Android Auto experience with an artwork-forward LocalWave home screen, library grid, dedicated Now Playing media template, voice-compatible controls, and the Android Auto album-art fix."
+  "versionCode": 56,
+  "versionName": "0.13.22",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.22/LocalWave-v0.13.22-release-signed.apk",
+  "sha256": "fa5250db9c2a4c678daffc1910da8ce589162a5f7806c1d39ea5e2b594762277",
+  "releaseNotes": "Fixes Android Auto album-art flicker by avoiding repeated artwork metadata pushes, keeps progress updates live, and adds artwork-forward content-style hints for compatible stock Android Auto hosts."
 }
