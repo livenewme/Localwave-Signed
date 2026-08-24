@@ -1,7 +1,7 @@
 {
-  "versionCode": 56,
-  "versionName": "0.13.22",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.22/LocalWave-v0.13.22-release-signed.apk",
-  "sha256": "fa5250db9c2a4c678daffc1910da8ce589162a5f7806c1d39ea5e2b594762277",
-  "releaseNotes": "Fixes Android Auto album-art flicker by avoiding repeated artwork metadata pushes, keeps progress updates live, and adds artwork-forward content-style hints for compatible stock Android Auto hosts."
+  "versionCode": 57,
+  "versionName": "0.13.23",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.23/LocalWave-v0.13.23-release-signed.apk",
+  "sha256": "6f44abfaab3a95dc8dd089cf037fe8cfa1d0202e32031f9d8697dc68b22eb103",
+  "releaseNotes": "Adds Experimental Speaker Hold for Bluetooth multipoint speakers: short burst-limited silent claim pulses can attempt to reclaim the audio route while LocalWave is paused, with automatic backoff and no activity during Cast, Roku, or DLNA playback."
 }
