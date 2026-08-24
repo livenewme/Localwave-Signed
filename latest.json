@@ -1,7 +1,7 @@
 {
-  "versionCode": 51,
-  "versionName": "0.13.17",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.17/LocalWave-v0.13.17-release-signed.apk",
-  "sha256": "58cb6c49ce6b229354da3fe28efadd2bc0bf6825ef174b73471557c177cb7400",
-  "releaseNotes": "Adds Android Auto support with car-display browsing for Songs, Albums, Artists, Playlists, and Liked tracks, plus Play/Pause, Previous/Next, Seek, metadata, queue-aware playback, and voice search while preserving Cast/DLNA/Roku isolation."
+  "versionCode": 52,
+  "versionName": "0.13.18",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.18/LocalWave-v0.13.18-release-signed.apk",
+  "sha256": "bbc0e920eb2259f51502ac12fea5a35bef0b3e7276612489db926ef5dd59410d",
+  "releaseNotes": "Adds a real Roku Now Playing screen with album artwork, title/artist/album, queue position, play state, elapsed/duration timing, a live progress bar, and a TV control strip while preserving the working Roku audio transport."
 }
