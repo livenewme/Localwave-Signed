@@ -1,0 +1,84 @@
+name: Publish LocalWave v0.13.22 once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - release-trigger-v0.13.22.txt
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      ZIP_URL: "https://sdmntprwestus3.oaiusercontent.com/files/00000000-4564-81fd-97a6-ece1108995cb/raw?se=2026-08-24T17%3A11%3A14Z&sp=r&sv=2026-02-06&sr=b&scid=2547a10f-a499-5ffe-ad88-be0c9fbff7bf&skoid=456594af-533f-44ef-9bdc-35ea2f9daee5&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-24T11%3A49%3A52Z&ske=2026-08-25T11%3A49%3A52Z&sks=b&skv=2026-02-06&sig=Li9yyJV1tOgxiNmlmaoZnhVd/87hyWRpEG/JioDejcA%3D"
+      EXPECTED_SHA: "fa5250db9c2a4c678daffc1910da8ce589162a5f7806c1d39ea5e2b594762277"
+      EXPECTED_SIZE: "3028883"
+      EXPECTED_BLOB: "c1801fd9d73ab56738a1c9568acdc586a5e5c626"
+      APK_NAME: "LocalWave-v0.13.22-release-signed.apk"
+    steps:
+      - name: Checkout release feed
+        uses: actions/checkout@v4
+        with:
+          ref: release-feed
+          fetch-depth: 0
+
+      - name: Verify feed state and stage exact CI artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          d=json.load(open('latest.json'))
+          assert d['versionCode']==55, f"expected live code55, got {d['versionCode']}"
+          PY
+          test ! -e releases/v0.13.22
+          curl -fL --retry 3 --retry-delay 2 "$ZIP_URL" -o /tmp/ci.zip
+          mkdir /tmp/ci
+          unzip -q /tmp/ci.zip -d /tmp/ci
+          APK="/tmp/ci/$APK_NAME"
+          test -f "$APK"
+          ACTUAL_SIZE="$(stat -c %s "$APK")"
+          ACTUAL_SHA="$(sha256sum "$APK" | awk '{print $1}')"
+          ACTUAL_BLOB="$(git hash-object "$APK")"
+          test "$ACTUAL_SIZE" = "$EXPECTED_SIZE"
+          test "$ACTUAL_SHA" = "$EXPECTED_SHA"
+          test "$ACTUAL_BLOB" = "$EXPECTED_BLOB"
+          mkdir -p releases/v0.13.22
+          cp "$APK" releases/v0.13.22/
+          printf '%s  %s\n' "$EXPECTED_SHA" "$APK_NAME" > "releases/v0.13.22/$APK_NAME.sha256"
+          cat > releases/v0.13.22/README.md <<'EOF'
+          # LocalWave v0.13.22
+
+          Stabilizes Android Auto artwork by publishing metadata only when track/duration changes, while retaining frequent playback-state updates and adding stock-host content-style hints.
+          EOF
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 56,
+            "versionName": "0.13.22",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.22/LocalWave-v0.13.22-release-signed.apk",
+            "sha256": "fa5250db9c2a4c678daffc1910da8ce589162a5f7806c1d39ea5e2b594762277",
+            "releaseNotes": "Fixes Android Auto album-art flicker by avoiding repeated artwork metadata pushes, keeps progress updates live, and adds artwork-forward content-style hints for compatible stock Android Auto hosts."
+          }
+          EOF
+          git config user.name "LocalWave Release Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add releases/v0.13.22 latest.json
+          git commit -m "Publish LocalWave v0.13.22"
+          git push origin release-feed
+
+      - name: Remove one-shot publisher
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout main
+          git pull --ff-only origin main
+          git rm .github/workflows/publish-v0.13.22-once.yml release-trigger-v0.13.22.txt
+          git config user.name "LocalWave Release Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git commit -m "Remove one-shot v0.13.22 publisher"
+          git push origin main
