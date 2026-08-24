@@ -1,7 +1,7 @@
 {
-  "versionCode": 52,
-  "versionName": "0.13.18",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.18/LocalWave-v0.13.18-release-signed.apk",
-  "sha256": "bbc0e920eb2259f51502ac12fea5a35bef0b3e7276612489db926ef5dd59410d",
-  "releaseNotes": "Adds a real Roku Now Playing screen with album artwork, title/artist/album, queue position, play state, elapsed/duration timing, a live progress bar, and a TV control strip while preserving the working Roku audio transport."
+  "versionCode": 53,
+  "versionName": "0.13.19",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.19/LocalWave-v0.13.19-release-signed.apk",
+  "sha256": "b8424ad6805b26ac4679b788e7591c1e2de443494a8f6092e47c4cc2d3d4ceaa",
+  "releaseNotes": "Fixes Roku remote Previous/Next/Play-Pause controls and polishes the Roku Now Playing footer with compact centered control cards while preserving the working Roku audio/artwork transport."
 }
