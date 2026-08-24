@@ -1,0 +1,72 @@
+name: Publish LocalWave v0.13.24
+
+on:
+  push:
+    paths:
+      - .publish-v0.13.24
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - name: Download and verify signed CI artifact
+        env:
+          ARTIFACT_URL: "https://sdmntprwestus3.oaiusercontent.com/files/00000000-1ab0-81fd-9664-df8e6deaf67f/raw?se=2026-08-24T22%3A14%3A00Z&sp=r&sv=2026-02-06&sr=b&scid=5d31a734-e2a9-5967-8a5b-7728b0bd806a&skoid=456594af-533f-44ef-9bdc-35ea2f9daee5&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-24T13%3A05%3A29Z&ske=2026-08-25T13%3A05%3A29Z&sks=b&skv=2026-02-06&sig=/uFfF6AJqLmiT6mm/SdeQytDXEOIPr4XtuIMc7wMAJ8%3D"
+          EXPECTED_SHA: "2d140cf23c4dd22ba1c5a45bba5ab50cfe42630a37abfea4dd321767bcf723f7"
+          EXPECTED_SIZE: "3045323"
+        run: |
+          set -euo pipefail
+          curl -fL "$ARTIFACT_URL" -o /tmp/candidate.zip
+          mkdir -p /tmp/candidate
+          unzip -q /tmp/candidate.zip -d /tmp/candidate
+          APK=/tmp/candidate/LocalWave-v0.13.24-release-signed.apk
+          test -f "$APK"
+          test "$(stat -c %s "$APK")" = "$EXPECTED_SIZE"
+          echo "$EXPECTED_SHA  $APK" | sha256sum -c -
+      - name: Publish APK first, then advance feed
+        env:
+          EXPECTED_SHA: "2d140cf23c4dd22ba1c5a45bba5ab50cfe42630a37abfea4dd321767bcf723f7"
+        run: |
+          set -euo pipefail
+          git config user.name "LocalWave Release Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git fetch origin release-feed
+          git checkout -B release-feed origin/release-feed
+          grep -q '"versionCode": 57' latest.json
+          test ! -e releases/v0.13.24
+          mkdir -p releases/v0.13.24
+          cp /tmp/candidate/LocalWave-v0.13.24-release-signed.apk releases/v0.13.24/
+          printf '%s  %s\n' "$EXPECTED_SHA" "LocalWave-v0.13.24-release-signed.apk" > releases/v0.13.24/LocalWave-v0.13.24-release-signed.apk.sha256
+          cat > releases/v0.13.24/README.md <<'EOF'
+          # LocalWave v0.13.24
+
+          Adds Samsung Bluetooth TV audio routing through Android's public media-route path, with guided Samsung pairing and no changes to DLNA, Roku, or Cast playback.
+          EOF
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 58,
+            "versionName": "0.13.24",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.24/LocalWave-v0.13.24-release-signed.apk",
+            "sha256": "2d140cf23c4dd22ba1c5a45bba5ab50cfe42630a37abfea4dd321767bcf723f7",
+            "releaseNotes": "Adds Samsung Bluetooth TV support with guided pairing and selection of Android-exposed Bluetooth media routes, while keeping playback on LocalWave's local low-latency path."
+          }
+          EOF
+          git add releases/v0.13.24 latest.json
+          git commit -m "Publish LocalWave v0.13.24 code 58"
+          git push origin release-feed
+      - name: Remove one-shot publisher
+        run: |
+          set -euo pipefail
+          git checkout main
+          git pull --ff-only origin main
+          rm -f .publish-v0.13.24 .github/workflows/publish-v0.13.24.yml
+          git add -A
+          git commit -m "Remove v0.13.24 one-shot publisher" || true
+          git push origin main
