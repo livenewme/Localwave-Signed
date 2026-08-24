@@ -1,7 +1,7 @@
 {
-  "versionCode": 53,
-  "versionName": "0.13.19",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.19/LocalWave-v0.13.19-release-signed.apk",
-  "sha256": "b8424ad6805b26ac4679b788e7591c1e2de443494a8f6092e47c4cc2d3d4ceaa",
-  "releaseNotes": "Fixes Roku remote Previous/Next/Play-Pause controls and polishes the Roku Now Playing footer with compact centered control cards while preserving the working Roku audio/artwork transport."
+  "versionCode": 55,
+  "versionName": "0.13.21",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.21/LocalWave-v0.13.21-release-signed.apk",
+  "sha256": "f5fabd8df728ff3da25a0e0ea71c7300817604325d3b4c846dabed27f614b852",
+  "releaseNotes": "Adds a Roku-inspired Android Auto experience with an artwork-forward LocalWave home screen, library grid, dedicated Now Playing media template, voice-compatible controls, and the Android Auto album-art fix."
 }
