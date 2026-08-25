@@ -1,0 +1,77 @@
+name: Publish LocalWave v0.13.25 once
+
+on:
+  push:
+    branches: [main]
+    paths: ['.publish-v01325']
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Publish verified CI artifact
+        env:
+          ARTIFACT_URL: 'https://sdmntprwestus.oaiusercontent.com/files/00000000-3208-8230-8bd8-dea7172f17e7/raw?se=2026-08-25T00%3A32%3A13Z&sp=r&sv=2026-02-06&sr=b&scid=f778aaf1-4fb5-5a42-a006-1becb1f3a16e&skoid=456594af-533f-44ef-9bdc-35ea2f9daee5&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-24T22%3A38%3A52Z&ske=2026-08-25T22%3A38%3A52Z&sks=b&skv=2026-02-06&sig=mFMJmZhSSH6xfGJnEnuakqoTsVZZPXgItCmf4Wv/d3g%3D'
+          EXPECTED_SHA: '1b281409c57d90a9b44d5f853076f7e2a194ecaca2e6b89384722b2b5569b79d'
+          EXPECTED_SIZE: '3045323'
+        run: |
+          set -euo pipefail
+          curl -fL "$ARTIFACT_URL" -o /tmp/localwave.zip
+          rm -rf /tmp/lw && mkdir /tmp/lw
+          unzip -q /tmp/localwave.zip -d /tmp/lw
+          APK=$(find /tmp/lw -type f -name '*.apk' | head -n1)
+          test -n "$APK"
+          test "$(stat -c%s "$APK")" = "$EXPECTED_SIZE"
+          echo "$EXPECTED_SHA  $APK" | sha256sum -c -
+
+          git fetch origin release-feed
+          git checkout -B release-feed origin/release-feed
+          python3 - <<'PY'
+          import json
+          d=json.load(open('latest.json'))
+          assert d['versionCode'] == 58, d
+          PY
+          test ! -e releases/v0.13.25
+          mkdir -p releases/v0.13.25
+          cp "$APK" releases/v0.13.25/LocalWave-v0.13.25-release-signed.apk
+          printf '%s  %s\n' "$EXPECTED_SHA" 'LocalWave-v0.13.25-release-signed.apk' > releases/v0.13.25/LocalWave-v0.13.25-release-signed.apk.sha256
+          cat > releases/v0.13.25/README.md <<'EOF'
+          # LocalWave v0.13.25
+          Signed CI release candidate for nearby Bluetooth speaker discovery and secure pairing handoff.
+          EOF
+          git config user.name 'LocalWave Release Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add releases/v0.13.25
+          git commit -m 'Publish LocalWave v0.13.25 APK'
+          git push origin release-feed
+
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 59,
+            "versionName": "0.13.25",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.25/LocalWave-v0.13.25-release-signed.apk",
+            "sha256": "1b281409c57d90a9b44d5f853076f7e2a194ecaca2e6b89384722b2b5569b79d",
+            "releaseNotes": "Adds discovery of nearby unpaired Bluetooth speaker-class devices, secure Android-managed pairing from LocalWave, and automatic route refresh after bonding."
+          }
+          EOF
+          git add latest.json
+          git commit -m 'Set LocalWave v0.13.25 as latest'
+          git push origin release-feed
+
+      - name: Remove one-shot publisher
+        if: success()
+        run: |
+          set -euo pipefail
+          git checkout main
+          git pull --ff-only origin main
+          git rm .github/workflows/publish-v01325.yml .publish-v01325
+          git config user.name 'LocalWave Release Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git commit -m 'Remove v0.13.25 one-shot publisher'
+          git push origin main
