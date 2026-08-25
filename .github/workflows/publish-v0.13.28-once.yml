@@ -1,0 +1,151 @@
+name: Publish LocalWave v0.13.28 once
+
+on:
+  push:
+    branches: [release-feed]
+    paths:
+      - '.github/workflows/publish-v0.13.28-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ARTIFACT_URL: 'https://sdmntprwestcentralus.oaiusercontent.com/files/00000000-db94-81fb-b4cc-e19c395417e6/raw?se=2026-08-25T17%3A56%3A46Z&sp=r&sv=2026-02-06&sr=b&scid=c869cddc-104e-5465-b9c3-4f8cb38a5753&skoid=18c14e53-ea0c-429b-8d09-d22d66ca7169&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-25T15%3A50%3A02Z&ske=2026-08-26T15%3A50%3A02Z&sks=b&skv=2026-02-06&sig=GMc29Umhdazjehvyj/9VOfj2VPHDMfY3ZwFuW56/v10%3D'
+      APK_NAME: LocalWave-v0.13.28-release-signed.apk
+      EXPECTED_SHA256: 95135ead95572252d0375023ae0f1b44ff4cb0b0ce7b91e04a1c999afe1c56c1
+      EXPECTED_GIT_BLOB: 1df6ee6dfd7146601e45efb4dfb898f184f665eb
+      EXPECTED_SIZE: '3049419'
+
+    steps:
+      - name: Checkout release feed
+        uses: actions/checkout@v4
+        with:
+          ref: release-feed
+          fetch-depth: 0
+
+      - name: Verify feed still points to code61
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          d = json.load(open('latest.json', 'r', encoding='utf-8'))
+          assert d['versionCode'] == 61, d
+          assert d['versionName'] == '0.13.27', d
+          PY
+
+      - name: Download and independently verify exact CI artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/localwave-artifact"
+          curl --fail --location --retry 3 --retry-delay 2 "$ARTIFACT_URL" -o "$RUNNER_TEMP/localwave-artifact.zip"
+          unzip -q "$RUNNER_TEMP/localwave-artifact.zip" -d "$RUNNER_TEMP/localwave-artifact"
+          apk="$RUNNER_TEMP/localwave-artifact/$APK_NAME"
+          test -f "$apk"
+          test "$(stat -c '%s' "$apk")" = "$EXPECTED_SIZE"
+          test "$(sha256sum "$apk" | awk '{print $1}')" = "$EXPECTED_SHA256"
+          test "$(git hash-object "$apk")" = "$EXPECTED_GIT_BLOB"
+
+      - name: Stage exact APK bytes first
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk="$RUNNER_TEMP/localwave-artifact/$APK_NAME"
+          release_dir="releases/v0.13.28"
+          mkdir -p "$release_dir"
+          cp "$apk" "$release_dir/$APK_NAME"
+          printf '%s  %s\n' "$EXPECTED_SHA256" "$APK_NAME" > "$release_dir/$APK_NAME.sha256"
+          cat > "$release_dir/README.md" <<'EOF'
+          LocalWave v0.13.28 / code62
+
+          Finger-tracked Now Playing swipe motion. Album artwork follows the drag, snaps back on cancelled gestures, and completes into Previous/Next with the incoming cover entering from the opposite side.
+          EOF
+          test "$(stat -c '%s' "$release_dir/$APK_NAME")" = "$EXPECTED_SIZE"
+          test "$(sha256sum "$release_dir/$APK_NAME" | awk '{print $1}')" = "$EXPECTED_SHA256"
+          test "$(git hash-object "$release_dir/$APK_NAME")" = "$EXPECTED_GIT_BLOB"
+          git config user.name 'LocalWave Release Bot'
+          git config user.email 'release@localwave.invalid'
+          git add "$release_dir"
+          git commit -m 'Publish LocalWave v0.13.28 signed APK'
+          git push origin HEAD:release-feed
+
+      - name: Verify staged public APK before latest.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          public_url="https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.28/$APK_NAME"
+          ok=0
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl --fail --location "$public_url" -o "$RUNNER_TEMP/public.apk"; then
+              if test "$(stat -c '%s' "$RUNNER_TEMP/public.apk")" = "$EXPECTED_SIZE" \
+                 && test "$(sha256sum "$RUNNER_TEMP/public.apk" | awk '{print $1}')" = "$EXPECTED_SHA256" \
+                 && test "$(git hash-object "$RUNNER_TEMP/public.apk")" = "$EXPECTED_GIT_BLOB"; then
+                ok=1
+                break
+              fi
+            fi
+            sleep 2
+          done
+          test "$ok" = 1
+
+      - name: Advance latest.json last
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 62,
+            "versionName": "0.13.28",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.28/LocalWave-v0.13.28-release-signed.apk",
+            "sha256": "95135ead95572252d0375023ae0f1b44ff4cb0b0ce7b91e04a1c999afe1c56c1",
+            "releaseNotes": "Now Playing album art follows your finger during left/right swipes. Short drags snap back; committed swipes carry through to Previous/Next and the new cover enters from the opposite side."
+          }
+          EOF
+          python3 - <<'PY'
+          import json
+          d = json.load(open('latest.json', 'r', encoding='utf-8'))
+          assert d['versionCode'] == 62
+          assert d['versionName'] == '0.13.28'
+          assert d['sha256'] == '95135ead95572252d0375023ae0f1b44ff4cb0b0ce7b91e04a1c999afe1c56c1'
+          PY
+          git add latest.json
+          git commit -m 'Set v0.13.28 as latest'
+          git push origin HEAD:release-feed
+
+      - name: Verify public latest.json and exact APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          latest_url="https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/latest.json"
+          ok=0
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl --fail --location "$latest_url" -o "$RUNNER_TEMP/latest-public.json"; then
+              if python3 - "$RUNNER_TEMP/latest-public.json" <<'PY'
+          import json, sys
+          d = json.load(open(sys.argv[1], 'r', encoding='utf-8'))
+          assert d['versionCode'] == 62
+          assert d['versionName'] == '0.13.28'
+          assert d['sha256'] == '95135ead95572252d0375023ae0f1b44ff4cb0b0ce7b91e04a1c999afe1c56c1'
+          PY
+              then
+                ok=1
+                break
+              fi
+            fi
+            sleep 2
+          done
+          test "$ok" = 1
+
+      - name: Remove one-shot publisher
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/publish-v0.13.28-once.yml
+          git commit -m 'Remove one-shot v0.13.28 publisher'
+          git push origin HEAD:release-feed
