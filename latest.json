@@ -1,7 +1,7 @@
 {
-  "versionCode": 60,
-  "versionName": "0.13.26",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.26/LocalWave-v0.13.26-release-signed.apk",
-  "sha256": "49ea49a0429c499c5da1e539fb66273d3a0ef3ada4010229627bd78ee7802350",
-  "releaseNotes": "Adds a sleep timer in the full-screen Now Playing three-dot menu. When time expires, LocalWave stops playback, tears down its playback service and tasks, then fully exits to leave no app process running."
+  "versionCode": 61,
+  "versionName": "0.13.27",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.27/LocalWave-v0.13.27-release-signed.apk",
+  "sha256": "4edf4cb4b9995e85b0e8a5842d4a1dcd787ba4f6581d3a1ec571460808166a8f",
+  "releaseNotes": "Unified Outputs center plus Mixed Whole House Beta for one Roku and one or more Samsung/DLNA TVs. DLNA remains the measured timing reference; Roku remains approximate with persistent manual release trim and Resync."
 }
