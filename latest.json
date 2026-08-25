@@ -1,7 +1,7 @@
 {
-  "versionCode": 58,
-  "versionName": "0.13.24",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.24/LocalWave-v0.13.24-release-signed.apk",
-  "sha256": "2d140cf23c4dd22ba1c5a45bba5ab50cfe42630a37abfea4dd321767bcf723f7",
-  "releaseNotes": "Adds Samsung Bluetooth TV support with guided pairing and selection of Android-exposed Bluetooth media routes, while keeping playback on LocalWave's local low-latency path."
+  "versionCode": 59,
+  "versionName": "0.13.25",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.25/LocalWave-v0.13.25-release-signed.apk",
+  "sha256": "1b281409c57d90a9b44d5f853076f7e2a194ecaca2e6b89384722b2b5569b79d",
+  "releaseNotes": "Adds discovery of nearby unpaired Bluetooth speaker-class devices, secure Android-managed pairing from LocalWave, and automatic route refresh after bonding."
 }
