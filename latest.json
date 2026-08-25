@@ -1,7 +1,7 @@
 {
-  "versionCode": 61,
-  "versionName": "0.13.27",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.27/LocalWave-v0.13.27-release-signed.apk",
-  "sha256": "4edf4cb4b9995e85b0e8a5842d4a1dcd787ba4f6581d3a1ec571460808166a8f",
-  "releaseNotes": "Unified Outputs center plus Mixed Whole House Beta for one Roku and one or more Samsung/DLNA TVs. DLNA remains the measured timing reference; Roku remains approximate with persistent manual release trim and Resync."
+  "versionCode": 62,
+  "versionName": "0.13.28",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.28/LocalWave-v0.13.28-release-signed.apk",
+  "sha256": "95135ead95572252d0375023ae0f1b44ff4cb0b0ce7b91e04a1c999afe1c56c1",
+  "releaseNotes": "Now Playing album art follows your finger during left/right swipes. Short drags snap back; committed swipes carry through to Previous/Next and the new cover enters from the opposite side."
 }
