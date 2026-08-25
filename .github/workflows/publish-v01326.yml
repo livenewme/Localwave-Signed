@@ -1,0 +1,67 @@
+name: Publish LocalWave v0.13.26 once
+
+on:
+  push:
+    paths:
+      - '.release-trigger-v01326'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify and publish exact CI artifact
+        env:
+          ARTIFACT_URL: 'https://sdmntprwestus3.oaiusercontent.com/files/00000000-2d98-81fd-aba5-70af1674bb48/raw?se=2026-08-25T06%3A53%3A13Z&sp=r&sv=2026-02-06&sr=b&scid=7083994d-6106-5d1f-b9e4-2fe929573bbc&skoid=4b04981f-b1dc-41e0-a770-8ce0d5c8f411&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-08-24T22%3A52%3A41Z&ske=2026-08-25T22%3A52%3A41Z&sks=b&skv=2026-02-06&sig=F1f4u/hiRlT3t6CrbXMqs70QqcaxSE8AFzlzYRcxzfo%3D'
+          EXPECTED_SHA: '49ea49a0429c499c5da1e539fb66273d3a0ef3ada4010229627bd78ee7802350'
+          EXPECTED_SIZE: '3049419'
+        run: |
+          set -euo pipefail
+          curl -fL "$ARTIFACT_URL" -o /tmp/ci.zip
+          mkdir -p /tmp/ci
+          unzip -q /tmp/ci.zip -d /tmp/ci
+          APK="/tmp/ci/LocalWave-v0.13.26-release-signed.apk"
+          test -f "$APK"
+          test "$(stat -c%s "$APK")" = "$EXPECTED_SIZE"
+          echo "$EXPECTED_SHA  $APK" | sha256sum -c -
+
+          git config user.name 'LocalWave Release Bot'
+          git config user.email 'release@localwave.invalid'
+          git fetch origin release-feed main
+          git worktree add /tmp/feed origin/release-feed
+          cd /tmp/feed
+          test ! -e releases/v0.13.26
+          mkdir -p releases/v0.13.26
+          cp "$APK" releases/v0.13.26/LocalWave-v0.13.26-release-signed.apk
+          printf '%s  %s\n' "$EXPECTED_SHA" 'LocalWave-v0.13.26-release-signed.apk' > releases/v0.13.26/LocalWave-v0.13.26-release-signed.apk.sha256
+          cat > releases/v0.13.26/README.md <<'EOF'
+          LocalWave v0.13.26 / code60
+
+          Sleep timer with full app shutdown on expiry.
+          EOF
+          git add releases/v0.13.26
+          git commit -m 'Publish LocalWave v0.13.26 APK'
+          git push origin HEAD:release-feed
+
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 60,
+            "versionName": "0.13.26",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.26/LocalWave-v0.13.26-release-signed.apk",
+            "sha256": "49ea49a0429c499c5da1e539fb66273d3a0ef3ada4010229627bd78ee7802350",
+            "releaseNotes": "Adds a sleep timer in the full-screen Now Playing three-dot menu. When time expires, LocalWave stops playback, tears down its playback service and tasks, then fully exits to leave no app process running."
+          }
+          EOF
+          git add latest.json
+          git commit -m 'Set v0.13.26 as latest'
+          git push origin HEAD:release-feed
+
+          cd "$GITHUB_WORKSPACE"
+          git rm .github/workflows/publish-v01326.yml .release-trigger-v01326
+          git commit -m 'Remove one-shot v0.13.26 publisher'
+          git push origin HEAD:main
