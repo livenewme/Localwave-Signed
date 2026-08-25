@@ -1,7 +1,7 @@
 {
-  "versionCode": 62,
-  "versionName": "0.13.28",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.28/LocalWave-v0.13.28-release-signed.apk",
-  "sha256": "95135ead95572252d0375023ae0f1b44ff4cb0b0ce7b91e04a1c999afe1c56c1",
-  "releaseNotes": "Now Playing album art follows your finger during left/right swipes. Short drags snap back; committed swipes carry through to Previous/Next and the new cover enters from the opposite side."
+  "versionCode": 63,
+  "versionName": "0.13.29",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.29/LocalWave-v0.13.29-release-signed.apk",
+  "sha256": "8eb9d27077f22f353a3cce5cddea3ef24a15d418910b2193dbcff94ac6b94b3f",
+  "releaseNotes": "Fixes jitter in finger-tracked Now Playing swipes. Drag motion now uses stable screen coordinates and translation-only finger tracking, while snap-back and Previous/Next transitions remain unchanged."
 }
