@@ -1,7 +1,7 @@
 {
-  "versionCode": 59,
-  "versionName": "0.13.25",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.25/LocalWave-v0.13.25-release-signed.apk",
-  "sha256": "1b281409c57d90a9b44d5f853076f7e2a194ecaca2e6b89384722b2b5569b79d",
-  "releaseNotes": "Adds discovery of nearby unpaired Bluetooth speaker-class devices, secure Android-managed pairing from LocalWave, and automatic route refresh after bonding."
+  "versionCode": 60,
+  "versionName": "0.13.26",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.26/LocalWave-v0.13.26-release-signed.apk",
+  "sha256": "49ea49a0429c499c5da1e539fb66273d3a0ef3ada4010229627bd78ee7802350",
+  "releaseNotes": "Adds a sleep timer in the full-screen Now Playing three-dot menu. When time expires, LocalWave stops playback, tears down its playback service and tasks, then fully exits to leave no app process running."
 }
