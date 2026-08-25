@@ -1,7 +1,7 @@
 {
-  "versionCode": 64,
-  "versionName": "0.13.30",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.30/LocalWave-v0.13.30-release-signed.apk",
-  "sha256": "8093352693c359087bc8016df504b546d5a6f0d37c6e5e5c698b574cc2eb7080",
-  "releaseNotes": "Selective DRY audit: centralizes liked-song persistence and listening-history read ownership while preserving intentional subsystem separation for transports, artwork, UI chrome, and independent release validation."
+  "versionCode": 65,
+  "versionName": "0.13.31",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.31/LocalWave-v0.13.31-release-signed.apk",
+  "sha256": "37c421cfab39b061ae2ccd727158fa72d16bcd12888c570f4414ef6e38551978",
+  "releaseNotes": "Adds a theme-colored output indicator beside the full-screen Now Playing menu. It stays hidden on phone-speaker playback and appears for active Android Auto, Bluetooth/headphones/speakers/TVs, Chromecast, television, and Whole House destinations."
 }
