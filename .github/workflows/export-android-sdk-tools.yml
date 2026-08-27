@@ -20,13 +20,16 @@ jobs:
           set -euo pipefail
           BT="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
           PLATFORM="$(find "$ANDROID_HOME/platforms" -mindepth 1 -maxdepth 1 -type d -name 'android-*' | sort -V | tail -1)"
+          LIBCPP="$(find "$ANDROID_HOME" -type f -name 'libc++.so' | head -1)"
+          test -n "$LIBCPP"
           mkdir -p "$RUNNER_TEMP/localwave-android-tools"
           cp "$BT/lib/d8.jar" "$RUNNER_TEMP/localwave-android-tools/d8.jar"
           cp "$BT/lib/apksigner.jar" "$RUNNER_TEMP/localwave-android-tools/apksigner.jar"
           cp "$BT/aapt2" "$RUNNER_TEMP/localwave-android-tools/aapt2"
           cp "$BT/zipalign" "$RUNNER_TEMP/localwave-android-tools/zipalign"
+          cp "$LIBCPP" "$RUNNER_TEMP/localwave-android-tools/libc++.so"
           cp "$PLATFORM/android.jar" "$RUNNER_TEMP/localwave-android-tools/android.jar"
-          printf 'build_tools=%s\nplatform=%s\n' "$BT" "$PLATFORM" > "$RUNNER_TEMP/localwave-android-tools/origin.txt"
+          printf 'build_tools=%s\nplatform=%s\nlibcpp=%s\n' "$BT" "$PLATFORM" "$LIBCPP" > "$RUNNER_TEMP/localwave-android-tools/origin.txt"
           chmod +x "$RUNNER_TEMP/localwave-android-tools/aapt2" "$RUNNER_TEMP/localwave-android-tools/zipalign"
       - name: Upload tool bundle
         uses: actions/upload-artifact@v4
