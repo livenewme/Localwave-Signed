@@ -1,0 +1,64 @@
+name: Patch LocalWave code67 hook
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/patch-localwave-code67-hook.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Install smali tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y smali unzip curl
+      - name: Patch existing LocalWave application hook
+        shell: bash
+        run: |
+          set -euo pipefail
+          WORK="$RUNNER_TEMP/lw67-hook"
+          mkdir -p "$WORK"
+          curl -fsSL 'https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.32/LocalWave-v0.13.32-release-signed.apk' -o "$WORK/base.apk"
+          unzip -p "$WORK/base.apk" classes.dex > "$WORK/classes.dex"
+          baksmali d "$WORK/classes.dex" -o "$WORK/smali"
+          FILE="$WORK/smali/app/localwave/player/LocalWaveApplication.smali"
+          test -f "$FILE"
+          python3 - "$FILE" <<'PY'
+import pathlib, sys
+p=pathlib.Path(sys.argv[1])
+s=p.read_text()
+marker='.method public final onActivityResumed(Landroid/app/Activity;)V'
+start=s.index(marker)
+end=s.index('.end method',start)
+chunk=s[start:end]
+hook='    invoke-static {p1}, Lapp/localwave/player/BulkMetadataInjector;->onActivityResumed(Landroid/app/Activity;)V\n'
+if hook.strip() in chunk:
+    raise SystemExit('hook already present')
+lines=chunk.splitlines(True)
+for i,line in enumerate(lines):
+    if line.lstrip().startswith(('.registers ','.locals ')):
+        lines.insert(i+1,'\n'+hook)
+        break
+else:
+    raise SystemExit('register directive not found')
+s=s[:start]+''.join(lines)+s[end:]
+p.write_text(s)
+PY
+          grep -A6 -F '.method public final onActivityResumed(Landroid/app/Activity;)V' "$FILE"
+          smali a "$WORK/smali" -o "$WORK/classes-patched.dex"
+          test -s "$WORK/classes-patched.dex"
+          mkdir -p "$RUNNER_TEMP/patched-dex"
+          cp "$WORK/classes-patched.dex" "$RUNNER_TEMP/patched-dex/classes.dex"
+          sha256sum "$RUNNER_TEMP/patched-dex/classes.dex" > "$RUNNER_TEMP/patched-dex/classes.dex.sha256"
+      - name: Upload patched primary dex
+        uses: actions/upload-artifact@v4
+        with:
+          name: localwave-code67-primary-dex
+          path: ${{ runner.temp }}/patched-dex
+          retention-days: 1
