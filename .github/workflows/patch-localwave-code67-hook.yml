@@ -29,28 +29,8 @@ jobs:
           baksmali d "$WORK/classes.dex" -o "$WORK/smali"
           FILE="$WORK/smali/app/localwave/player/LocalWaveApplication.smali"
           test -f "$FILE"
-          python3 - "$FILE" <<'PY'
-import pathlib, sys
-p=pathlib.Path(sys.argv[1])
-s=p.read_text()
-marker='.method public final onActivityResumed(Landroid/app/Activity;)V'
-start=s.index(marker)
-end=s.index('.end method',start)
-chunk=s[start:end]
-hook='    invoke-static {p1}, Lapp/localwave/player/BulkMetadataInjector;->onActivityResumed(Landroid/app/Activity;)V\n'
-if hook.strip() in chunk:
-    raise SystemExit('hook already present')
-lines=chunk.splitlines(True)
-for i,line in enumerate(lines):
-    if line.lstrip().startswith(('.registers ','.locals ')):
-        lines.insert(i+1,'\n'+hook)
-        break
-else:
-    raise SystemExit('register directive not found')
-s=s[:start]+''.join(lines)+s[end:]
-p.write_text(s)
-PY
-          grep -A6 -F '.method public final onActivityResumed(Landroid/app/Activity;)V' "$FILE"
+          python3 -c 'import pathlib,sys,re; p=pathlib.Path(sys.argv[1]); s=p.read_text(); marker=".method public final onActivityResumed(Landroid/app/Activity;)V"; start=s.index(marker); end=s.index(".end method",start); chunk=s[start:end]; hook="    invoke-static {p1}, Lapp/localwave/player/BulkMetadataInjector;->onActivityResumed(Landroid/app/Activity;)V"; assert hook not in chunk; patched,n=re.subn(r"(?m)^(\s*\.(?:registers|locals)\s+\d+\s*)$",r"\1\n\n"+hook,chunk,count=1); assert n==1; p.write_text(s[:start]+patched+s[end:])' "$FILE"
+          grep -A7 -F '.method public final onActivityResumed(Landroid/app/Activity;)V' "$FILE"
           smali a "$WORK/smali" -o "$WORK/classes-patched.dex"
           test -s "$WORK/classes-patched.dex"
           mkdir -p "$RUNNER_TEMP/patched-dex"
