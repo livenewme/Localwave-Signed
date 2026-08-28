@@ -22,6 +22,7 @@ jobs:
           PLATFORM="$ANDROID_HOME/platforms/android-36"
           LIBCPP="$BT/lib64/libc++.so"
           test -x "$BT/zipalign"
+          test -x "$BT/dexdump"
           test -f "$BT/lib/d8.jar"
           test -f "$BT/lib/apksigner.jar"
           test -f "$LIBCPP"
@@ -31,10 +32,11 @@ jobs:
           cp "$BT/lib/apksigner.jar" "$RUNNER_TEMP/localwave-android-tools/apksigner.jar"
           cp "$BT/aapt2" "$RUNNER_TEMP/localwave-android-tools/aapt2"
           cp "$BT/zipalign" "$RUNNER_TEMP/localwave-android-tools/zipalign"
+          cp "$BT/dexdump" "$RUNNER_TEMP/localwave-android-tools/dexdump"
           cp "$LIBCPP" "$RUNNER_TEMP/localwave-android-tools/libc++.so"
           cp "$PLATFORM/android.jar" "$RUNNER_TEMP/localwave-android-tools/android.jar"
           printf 'build_tools=%s\nplatform=%s\nlibcpp=%s\n' "$BT" "$PLATFORM" "$LIBCPP" > "$RUNNER_TEMP/localwave-android-tools/origin.txt"
-          chmod +x "$RUNNER_TEMP/localwave-android-tools/aapt2" "$RUNNER_TEMP/localwave-android-tools/zipalign"
+          chmod +x "$RUNNER_TEMP/localwave-android-tools/aapt2" "$RUNNER_TEMP/localwave-android-tools/zipalign" "$RUNNER_TEMP/localwave-android-tools/dexdump"
       - name: Upload tool bundle
         uses: actions/upload-artifact@v4
         with:
