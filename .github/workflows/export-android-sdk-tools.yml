@@ -20,7 +20,7 @@ jobs:
           set -euo pipefail
           BT="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
           PLATFORM="$(find "$ANDROID_HOME/platforms" -mindepth 1 -maxdepth 1 -type d -name 'android-*' | sort -V | tail -1)"
-          LIBCPP="$(find "$ANDROID_HOME" -type f -name 'libc++.so' | head -1)"
+          LIBCPP="$(find "$ANDROID_HOME" -type f -name 'libc++.so' -print -quit)"
           test -n "$LIBCPP"
           mkdir -p "$RUNNER_TEMP/localwave-android-tools"
           cp "$BT/lib/d8.jar" "$RUNNER_TEMP/localwave-android-tools/d8.jar"
