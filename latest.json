@@ -1,7 +1,7 @@
 {
-  "versionCode": 70,
-  "versionName": "0.13.36",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.36/LocalWave-v0.13.36-release-signed.apk",
-  "sha256": "9af17d768a4c5aeae389379cfae11571cb3c996142bcb0f700d10e4d20373510",
-  "releaseNotes": "Fixes the in-app Change Log: LocalWave now uses one canonical bundled changelog, removes the stale duplicate that could appear above current notes, and verifies the actual packaged APK changelog version in CI. No playback or audio-engine behavior changed."
+  "versionCode": 71,
+  "versionName": "0.13.37",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.37/LocalWave-v0.13.37-release-signed.apk",
+  "sha256": "96fa9601de8b0c28f512886e7d9051519d782ae2c34266e9e6710c618bc7b4e3",
+  "releaseNotes": "Adds LocalWave Backup & Restore plus Data Consolidation. Backups preserve LocalWave app state without copying music. Data Consolidation previews and then, only after explicit LocalWave confirmation and Android write approval, organizes visible music into clean Artist/Album folders. Shadow Realm tracks are hard-excluded and never moved or renamed."
 }
