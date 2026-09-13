@@ -1,0 +1,34 @@
+name: Probe v0.13.38 artifact access
+
+on:
+  push:
+    branches: [release-feed]
+    paths:
+      - '.github/workflows/v01338-artifact-access-probe.yml'
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Download exact signed source artifact
+        uses: dawidd6/action-download-artifact@7f871e041ed7fe12467d2d4196da8a466c5311ff
+        with:
+          repo: livenewme/LocalWave
+          run_id: '34744481828'
+          name: LocalWave-release-signed
+          path: ${{ runner.temp }}/candidate
+
+      - name: Verify exact candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk="$RUNNER_TEMP/candidate/LocalWave-v0.13.38-release-signed.apk"
+          test -f "$apk"
+          test "$(stat -c '%s' "$apk")" = '3086228'
+          test "$(sha256sum "$apk" | awk '{print $1}')" = 'a0b321b4492661a8bc0a415938da46f6da24d6383402956a562927e8c805fe78'
+          test "$(git hash-object "$apk")" = '7070240e2bebb00212f1904aeda679618bf35444'
