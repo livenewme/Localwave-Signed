@@ -1,0 +1,217 @@
+name: Publish LocalWave v0.13.38 once
+
+on:
+  push:
+    branches: [release-feed]
+    paths:
+      - '.github/workflows/publish-v0.13.38-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout release feed
+        uses: actions/checkout@v4
+        with:
+          ref: release-feed
+          fetch-depth: 0
+
+      - name: Verify feed still points to code71
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          d=json.load(open('latest.json','r',encoding='utf-8'))
+          assert d['versionCode']==71, d
+          assert d['versionName']=='0.13.37', d
+          assert d['sha256']=='96fa9601de8b0c28f512886e7d9051519d782ae2c34266e9e6710c618bc7b4e3', d
+          PY
+
+      - name: Reconstruct and verify exact signed v0.13.38 APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          old='releases/v0.13.37/LocalWave-v0.13.37-release-signed.apk'
+          patch_b64="$RUNNER_TEMP/v01338.patch.b64"
+          patch="$RUNNER_TEMP/v01338.patch.zst"
+          apk="$RUNNER_TEMP/LocalWave-v0.13.38-release-signed.apk"
+
+          cat .release-staging/v0.13.38/patch.part.* > "$patch_b64"
+          base64 --decode "$patch_b64" > "$patch"
+
+          test "$(stat -c '%s' "$patch")" = '1646350'
+          test "$(stat -c '%s' "$old")" = '3086228'
+          test "$(sha256sum "$old" | awk '{print $1}')" = '96fa9601de8b0c28f512886e7d9051519d782ae2c34266e9e6710c618bc7b4e3'
+          test "$(git hash-object "$old")" = 'c02c737050b8024b82e880cc1deceaa3dcf83b40'
+
+          zstd -d --patch-from="$old" "$patch" -o "$apk"
+
+          test "$(stat -c '%s' "$apk")" = '3086228'
+          test "$(sha256sum "$apk" | awk '{print $1}')" = 'a0b321b4492661a8bc0a415938da46f6da24d6383402956a562927e8c805fe78'
+          test "$(git hash-object "$apk")" = '7070240e2bebb00212f1904aeda679618bf35444'
+
+      - name: Stage exact APK bytes first
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk="$RUNNER_TEMP/LocalWave-v0.13.38-release-signed.apk"
+          dir='releases/v0.13.38'
+          name='LocalWave-v0.13.38-release-signed.apk'
+
+          test ! -e "$dir/$name"
+          mkdir -p "$dir"
+          cp "$apk" "$dir/$name"
+          printf '%s  %s\n' 'a0b321b4492661a8bc0a415938da46f6da24d6383402956a562927e8c805fe78' "$name" > "$dir/SHA256SUMS.txt"
+          cat > "$dir/README.md" <<'EOF'
+          # LocalWave v0.13.38 / code72
+
+          Adds Bluetooth participation in Whole House through LocalWave's capability-driven Output Fabric while preserving one Android-owned local playback leg and the existing Cast, Roku, Samsung/DLNA, Android Auto, DSP, ReplayGain, EQ, and normal single-output boundaries.
+
+          ## Release verification
+
+          - Build: LocalWave #357
+          - Run: `34744481828`
+          - Feature source head: `8b4d503b0142f3d5a42bdb5a9e2805babb0198bc`
+          - Tested PR merge revision embedded in APK: `0996f7031792aba714226b36aa5e4763f60ffb19`
+          - PR: `#57`
+          - Package: `app.localwave.player`
+          - versionName: `0.13.38`
+          - versionCode: `72`
+          - APK: `LocalWave-v0.13.38-release-signed.apk`
+          - Size: `3,086,228` bytes
+          - SHA-256: `a0b321b4492661a8bc0a415938da46f6da24d6383402956a562927e8c805fe78`
+          - Git blob: `7070240e2bebb00212f1904aeda679618bf35444`
+          - Signer certificate SHA-256: `58d7c6616a809d769b4211cb21a16d37a018a112617184e2f4093cedfeb3e4ba`
+          - APK Signature Scheme v2: verified
+          - APK Signature Scheme v3: verified
+          - Independent artifact verification: passed
+          - Physical-device acceptance: pending
+
+          The exact signed candidate is reconstructed byte-for-byte from the previously verified release delta, then size, SHA-256, and Git blob are checked before publication. The APK is published before `latest.json` is advanced.
+          EOF
+
+          test "$(stat -c '%s' "$dir/$name")" = '3086228'
+          test "$(sha256sum "$dir/$name" | awk '{print $1}')" = 'a0b321b4492661a8bc0a415938da46f6da24d6383402956a562927e8c805fe78'
+          test "$(git hash-object "$dir/$name")" = '7070240e2bebb00212f1904aeda679618bf35444'
+
+          git config user.name 'LocalWave Release Bot'
+          git config user.email 'release@localwave.invalid'
+          git add "$dir"
+          git commit -m 'Stage LocalWave v0.13.38 signed APK'
+          git push origin HEAD:release-feed
+
+      - name: Verify staged public APK before latest.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.38/LocalWave-v0.13.38-release-signed.apk?run=$GITHUB_RUN_ID&phase=stage"
+          ok=0
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl --fail --location "$url" -o "$RUNNER_TEMP/public.apk"; then
+              if test "$(stat -c '%s' "$RUNNER_TEMP/public.apk")" = '3086228' \
+                 && test "$(sha256sum "$RUNNER_TEMP/public.apk" | awk '{print $1}')" = 'a0b321b4492661a8bc0a415938da46f6da24d6383402956a562927e8c805fe78' \
+                 && test "$(git hash-object "$RUNNER_TEMP/public.apk")" = '7070240e2bebb00212f1904aeda679618bf35444'; then
+                ok=1
+                break
+              fi
+            fi
+            sleep 2
+          done
+          test "$ok" = 1
+
+      - name: Advance latest.json last
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > latest.json <<'EOF'
+          {
+            "versionCode": 72,
+            "versionName": "0.13.38",
+            "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.38/LocalWave-v0.13.38-release-signed.apk",
+            "sha256": "a0b321b4492661a8bc0a415938da46f6da24d6383402956a562927e8c805fe78",
+            "releaseNotes": "Adds Bluetooth to Whole House through LocalWave's Output Fabric. The active Android Bluetooth route can coordinate with supported Roku and Samsung/DLNA outputs, with conservative latency estimates, bounded manual trim, explicit route state, and fail-closed local behavior on route loss. Existing normal Bluetooth, wired, Android Auto, Cast, Roku, Samsung/DLNA, DSP, ReplayGain, EQ, and single-output playback remain isolated."
+          }
+          EOF
+
+          cat > README.md <<'EOF'
+          # LocalWave signed release feed
+
+          This branch is the live update feed for LocalWave.
+
+          ## Current updater release
+
+          - Current version: **0.13.38**
+          - versionCode: **72**
+          - Package: `app.localwave.player`
+          - APK: `releases/v0.13.38/LocalWave-v0.13.38-release-signed.apk`
+          - APK size: **3,086,228 bytes**
+          - APK SHA-256: `a0b321b4492661a8bc0a415938da46f6da24d6383402956a562927e8c805fe78`
+          - APK Git blob: `7070240e2bebb00212f1904aeda679618bf35444`
+          - Signer certificate SHA-256: `58d7c6616a809d769b4211cb21a16d37a018a112617184e2f4093cedfeb3e4ba`
+          - Feature source head: `8b4d503b0142f3d5a42bdb5a9e2805babb0198bc`
+          - Tested PR merge revision: `0996f7031792aba714226b36aa5e4763f60ffb19`
+          - PR: **#57**
+          - Build: LocalWave **#357** / run `34744481828`
+          - Physical-device acceptance: **pending**
+
+          v0.13.38 adds Bluetooth participation in Whole House through LocalWave's capability-driven Output Fabric while preserving one Android-owned local playback leg and existing transport isolation. Bluetooth/local + Google Cast mixed playback remains intentionally unsupported in this release because the current Cast adapter transfers the sole player rather than operating in parallel.
+
+          Releases follow APK-first / manifest-last publication. The updater verifies trusted HTTPS hosts, APK SHA-256, package name, version code, and the pinned LocalWave signing certificate before installation.
+          EOF
+
+          python3 - <<'PY'
+          import json
+          d=json.load(open('latest.json','r',encoding='utf-8'))
+          assert d['versionCode']==72
+          assert d['versionName']=='0.13.38'
+          assert d['sha256']=='a0b321b4492661a8bc0a415938da46f6da24d6383402956a562927e8c805fe78'
+          PY
+
+          git add latest.json README.md
+          git commit -m 'Set v0.13.38 as latest'
+          git push origin HEAD:release-feed
+
+      - name: Verify final public manifest and APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          latest="https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/latest.json?run=$GITHUB_RUN_ID&phase=final"
+          apk="https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.38/LocalWave-v0.13.38-release-signed.apk?run=$GITHUB_RUN_ID&phase=final"
+          ok=0
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl --fail --location "$latest" -o "$RUNNER_TEMP/latest.json" \
+               && curl --fail --location "$apk" -o "$RUNNER_TEMP/final.apk"; then
+              if python3 - "$RUNNER_TEMP/latest.json" <<'PY'
+          import json,sys
+          d=json.load(open(sys.argv[1],'r',encoding='utf-8'))
+          assert d['versionCode']==72
+          assert d['versionName']=='0.13.38'
+          assert d['sha256']=='a0b321b4492661a8bc0a415938da46f6da24d6383402956a562927e8c805fe78'
+          PY
+              then
+                if test "$(stat -c '%s' "$RUNNER_TEMP/final.apk")" = '3086228' \
+                   && test "$(sha256sum "$RUNNER_TEMP/final.apk" | awk '{print $1}')" = 'a0b321b4492661a8bc0a415938da46f6da24d6383402956a562927e8c805fe78' \
+                   && test "$(git hash-object "$RUNNER_TEMP/final.apk")" = '7070240e2bebb00212f1904aeda679618bf35444'; then
+                  ok=1
+                  break
+                fi
+              fi
+            fi
+            sleep 2
+          done
+          test "$ok" = 1
+
+      - name: Remove one-shot publisher and staging payload
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/publish-v0.13.38-once.yml
+          git rm -r .release-staging/v0.13.38
+          git commit -m 'Remove v0.13.38 one-shot publisher staging files'
+          git push origin HEAD:release-feed
