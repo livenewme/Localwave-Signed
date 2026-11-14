@@ -1,7 +1,7 @@
 {
-  "versionCode": 84,
-  "versionName": "0.15.7",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.7/LocalWave-v0.15.7-release-signed.apk",
-  "sha256": "353c8f126968ec154b0745ac2a00847bf8666ba34e3665c0999425ef0eff5740",
-  "releaseNotes": "Artwork in mini player, full player and queue for shared songs; Android Auto artwork loads off the main thread and can no longer crash on a recycled bitmap."
+  "versionCode": 85,
+  "versionName": "0.15.8",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.8/LocalWave-v0.15.8-release-signed.apk",
+  "sha256": "54b7d6724614fea19a19db16bf5080859ccd518d1eee0e5c9924e1c23b77d594",
+  "releaseNotes": "Algorithmic: discovery quota, artist/album spacing, no recent repeats. Smart: familiar openers, context with confidence bounds, safe recovery after skip streaks. Recent starts remembered across restarts."
 }
