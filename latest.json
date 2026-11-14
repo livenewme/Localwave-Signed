@@ -1,7 +1,7 @@
 {
-  "versionCode": 81,
-  "versionName": "0.15.4",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.4/LocalWave-v0.15.4-release-signed.apk",
-  "sha256": "8d3dee98a7ad9005e2dec5e327dcd3fe8fccbf031fbcfef1dc541754c8f7ab54",
-  "releaseNotes": "Chunked library uploads: 8 MB pieces, clean abort on failure."
+  "versionCode": 82,
+  "versionName": "0.15.5",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.5/LocalWave-v0.15.5-release-signed.apk",
+  "sha256": "3ad4717db589996c617b6a32ca96ccf79f1edffb1b0d99c138353abc6b5bb26f",
+  "releaseNotes": "Fast local path: phones talk to the hub directly when on the same Wi-Fi and fall back to the server URL otherwise."
 }
