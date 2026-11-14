@@ -1,7 +1,7 @@
 {
-  "versionCode": 85,
-  "versionName": "0.15.8",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.8/LocalWave-v0.15.8-release-signed.apk",
-  "sha256": "54b7d6724614fea19a19db16bf5080859ccd518d1eee0e5c9924e1c23b77d594",
-  "releaseNotes": "Algorithmic: discovery quota, artist/album spacing, no recent repeats. Smart: familiar openers, context with confidence bounds, safe recovery after skip streaks. Recent starts remembered across restarts."
+  "versionCode": 86,
+  "versionName": "0.15.9",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.9/LocalWave-v0.15.9-release-signed.apk",
+  "sha256": "3ebf6d5d63acd509d25260b0dd899a3c9f60a3181966d1c608bc27c7e91b1f29",
+  "releaseNotes": "Tracks you finish now count as positive evidence, early skips count against them, and Smart favours songs you actually finish. Context uses the last 60 days so the mix follows your current routine."
 }
