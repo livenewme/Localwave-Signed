@@ -1,7 +1,7 @@
 {
-  "versionCode": 73,
-  "versionName": "0.14.0",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.14.0/LocalWave-v0.14.0-release-signed.apk",
-  "sha256": "3505e88b8aee17251bafc4d7c158aaae805b2ea6b42a3d867422d465cf40d40d",
-  "releaseNotes": "LAN library sharing: Outputs can now expose the visible LocalWave library to proper players on your Wi-Fi. Read-only JSON index, byte-range audio streaming, embedded artwork and mDNS discovery. Off by default, runs in a foreground service with a Stop action, and never leaves your local network."
+  "versionCode": 74,
+  "versionName": "0.14.1",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.14.1/LocalWave-v0.14.1-release-signed.apk",
+  "sha256": "c8387187312266f8b463133577b05cfe5e50aa9ae298cc057fc0e564192c7b8d",
+  "releaseNotes": "LAN library response flush fix: /health, small JSON, artwork and short audio responses now flush before the connection closes. Fixes discovery and small-library responses on 0.14.0."
 }
