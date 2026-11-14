@@ -3,5 +3,5 @@
   "versionName": "0.16.0",
   "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.16.0/LocalWave-v0.16.0-release-signed.apk",
   "sha256": "997105b3ee538549f60f64c0419c2a8cd32535177f9567db43310c290f7657cb",
-  "releaseNotes": "Banished tracks stay banished. A Shadow Realm ban is matched by title, artist, album and length instead of a MediaStore id, so it survives a cleared cache, a rebuilt media index, moved files, a restored backup and a new phone. Tracks whose file is gone stay listed and restorable. Bans from the previous version are carried over."
+  "releaseNotes": "Banished tracks stay banished. A ban is matched by title, artist, album and length instead of a MediaStore id, so it survives a cleared cache, rebuilt media index, moved files, restored backup and new phone. Missing files stay listed and restorable."
 }
