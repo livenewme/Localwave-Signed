@@ -1,7 +1,7 @@
 {
-  "versionCode": 74,
-  "versionName": "0.14.1",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.14.1/LocalWave-v0.14.1-release-signed.apk",
-  "sha256": "c8387187312266f8b463133577b05cfe5e50aa9ae298cc057fc0e564192c7b8d",
-  "releaseNotes": "LAN library response flush fix: /health, small JSON, artwork and short audio responses now flush before the connection closes. Fixes discovery and small-library responses on 0.14.0."
+  "versionCode": 75,
+  "versionName": "0.14.2",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.14.2/LocalWave-v0.14.2-release-signed.apk",
+  "sha256": "7e27e98a53fac4c2e59b2cc8f93683ef4698f6b674133dbc98b6fd92dbcc65ae",
+  "releaseNotes": "Adds a Shared library section in Outputs with the household hub address and an Open shared library button."
 }
