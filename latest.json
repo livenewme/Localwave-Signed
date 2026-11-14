@@ -1,7 +1,7 @@
 {
-  "versionCode": 82,
-  "versionName": "0.15.5",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.5/LocalWave-v0.15.5-release-signed.apk",
-  "sha256": "3ad4717db589996c617b6a32ca96ccf79f1edffb1b0d99c138353abc6b5bb26f",
-  "releaseNotes": "Fast local path: phones talk to the hub directly when on the same Wi-Fi and fall back to the server URL otherwise."
+  "versionCode": 83,
+  "versionName": "0.15.6",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.6/LocalWave-v0.15.6-release-signed.apk",
+  "sha256": "7e0410fcca7321e14bb41ee45f21a51ebac8c46fd7a7d3f5f9b619e0b4a720a8",
+  "releaseNotes": "Cover art for shared-library songs, and the hub now extracts artwork from uploaded tracks."
 }
