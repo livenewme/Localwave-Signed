@@ -1,7 +1,7 @@
 {
-  "versionCode": 83,
-  "versionName": "0.15.6",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.6/LocalWave-v0.15.6-release-signed.apk",
-  "sha256": "7e0410fcca7321e14bb41ee45f21a51ebac8c46fd7a7d3f5f9b619e0b4a720a8",
-  "releaseNotes": "Cover art for shared-library songs, and the hub now extracts artwork from uploaded tracks."
+  "versionCode": 84,
+  "versionName": "0.15.7",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.7/LocalWave-v0.15.7-release-signed.apk",
+  "sha256": "353c8f126968ec154b0745ac2a00847bf8666ba34e3665c0999425ef0eff5740",
+  "releaseNotes": "Artwork in mini player, full player and queue for shared songs; Android Auto artwork loads off the main thread and can no longer crash on a recycled bitmap."
 }
