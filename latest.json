@@ -3,5 +3,6 @@
   "versionName": "0.14.3",
   "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.14.3/LocalWave-v0.14.3-release-signed.apk",
   "sha256": "6e7ccf2cf0a0b8e5c8d1cd4d1c6bd22ddec20609ac83ffb76d28e3ecd9c7215a",
-  "releaseNotes": "Opens the shared household library inside the app with an in-app browser; password gate unchanged."
+  "releaseNotes": "Opens the shared household library inside the app with an in-app browser; password gate unchanged.",
+  "updatedAt": 1794634281
 }
