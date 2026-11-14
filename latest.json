@@ -1,7 +1,7 @@
 {
-  "versionCode": 79,
-  "versionName": "0.15.2",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.2/LocalWave-v0.15.2-release-signed.apk",
-  "sha256": "e310e4cf51338653628e2a8d108d591d39ee6e69d527eacf00333491f4138690",
-  "releaseNotes": "Joined phones auto-sync the shared library from the hub, plus a Sync now button in Settings."
+  "versionCode": 80,
+  "versionName": "0.15.3",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.3/LocalWave-v0.15.3-release-signed.apk",
+  "sha256": "3e6d69435ec640e500ff97d3a4f60352ef891636fbafbe27f3308874de7788bf",
+  "releaseNotes": "Send your library to the hub over any Wi-Fi or mobile connection, with hash dedupe, progress and cancel."
 }
