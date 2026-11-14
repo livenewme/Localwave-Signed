@@ -1,8 +1,7 @@
 {
-  "versionCode": 76,
-  "versionName": "0.14.3",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.14.3/LocalWave-v0.14.3-release-signed.apk",
-  "sha256": "6e7ccf2cf0a0b8e5c8d1cd4d1c6bd22ddec20609ac83ffb76d28e3ecd9c7215a",
-  "releaseNotes": "Opens the shared household library inside the app with an in-app browser; password gate unchanged.",
-  "updatedAt": 1794634281
+  "versionCode": 77,
+  "versionName": "0.15.0",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.0/LocalWave-v0.15.0-release-signed.apk",
+  "sha256": "b2f60905d28dc7e0f98c242589755f45a452f6e6e759d1dd044bc8c226e9cb55",
+  "releaseNotes": "Join shared server in Settings: cache shared track names, merge them into the main library, stream through the normal player and prefetch upcoming tracks."
 }
