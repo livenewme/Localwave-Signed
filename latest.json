@@ -1,8 +1,7 @@
 {
-  "versionCode": 87,
-  "versionName": "0.16.0",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.16.0/LocalWave-v0.16.0-release-signed.apk",
-  "sha256": "997105b3ee538549f60f64c0419c2a8cd32535177f9567db43310c290f7657cb",
-  "releaseNotes": "Banished tracks stay banished. A ban is matched by title, artist, album and length instead of a MediaStore id, so it survives a cleared cache, rebuilt media index, moved files, restored backup and new phone. Missing files stay listed and restorable.",
-  "publishedAtMs": 1794691761731
+  "versionCode": 88,
+  "versionName": "0.16.1",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.16.1/LocalWave-v0.16.1-release-signed.apk",
+  "sha256": "49f9ab882f6b40c8353195e937178880b14157207a6852f6c5f4b6b1ff3712bc",
+  "releaseNotes": "Playlists and liked songs survive a cleared cache, a rebuilt media index and a new phone. Playlists report tracks that are not on the device instead of dropping them. Smart Playlists add Always Finish, Rediscover, Skip Magnets and Right Now. Each playlist keeps its own shuffle memory, and Up next can keep itself going."
 }
