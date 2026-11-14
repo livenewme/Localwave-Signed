@@ -1,7 +1,7 @@
 {
-  "versionCode": 72,
-  "versionName": "0.13.38",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.13.38/LocalWave-v0.13.38-release-signed.apk",
-  "sha256": "a0b321b4492661a8bc0a415938da46f6da24d6383402956a562927e8c805fe78",
-  "releaseNotes": "Adds Bluetooth to Whole House through LocalWave's Output Fabric. The active Android Bluetooth route can coordinate with supported Roku and Samsung/DLNA outputs, with conservative latency estimates, bounded manual trim, explicit route state, and fail-closed local behavior on route loss. Existing normal Bluetooth, wired, Android Auto, Cast, Roku, Samsung/DLNA, DSP, ReplayGain, EQ, and single-output playback remain isolated."
+  "versionCode": 73,
+  "versionName": "0.14.0",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.14.0/LocalWave-v0.14.0-release-signed.apk",
+  "sha256": "3505e88b8aee17251bafc4d7c158aaae805b2ea6b42a3d867422d465cf40d40d",
+  "releaseNotes": "LAN library sharing: Outputs can now expose the visible LocalWave library to proper players on your Wi-Fi. Read-only JSON index, byte-range audio streaming, embedded artwork and mDNS discovery. Off by default, runs in a foreground service with a Stop action, and never leaves your local network."
 }
