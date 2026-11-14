@@ -1,7 +1,7 @@
 {
-  "versionCode": 78,
-  "versionName": "0.15.1",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.1/LocalWave-v0.15.1-release-signed.apk",
-  "sha256": "c4cac24e6cdaeac84346a79668bcda784d3bb7f0497104bcf9f959f39fd81726",
-  "releaseNotes": "Devices report their current track, position and play/pause state to the hub; the PC Shared page shows what each phone is listening to."
+  "versionCode": 79,
+  "versionName": "0.15.2",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.15.2/LocalWave-v0.15.2-release-signed.apk",
+  "sha256": "e310e4cf51338653628e2a8d108d591d39ee6e69d527eacf00333491f4138690",
+  "releaseNotes": "Joined phones auto-sync the shared library from the hub, plus a Sync now button in Settings."
 }
