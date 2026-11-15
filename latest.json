@@ -1,7 +1,7 @@
 {
-  "versionCode": 88,
-  "versionName": "0.16.1",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.16.1/LocalWave-v0.16.1-release-signed.apk",
-  "sha256": "49f9ab882f6b40c8353195e937178880b14157207a6852f6c5f4b6b1ff3712bc",
-  "releaseNotes": "Playlists and liked songs survive a cleared cache, a rebuilt media index and a new phone. Playlists report tracks that are not on the device instead of dropping them. Smart Playlists add Always Finish, Rediscover, Skip Magnets and Right Now. Each playlist keeps its own shuffle memory, and Up next can keep itself going."
+  "versionCode": 89,
+  "versionName": "0.16.2",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.16.2/LocalWave-v0.16.2-release-signed.apk",
+  "sha256": "8decb369966d2551c73398b6fb7d9fc4a9472ba7f16e429f3f4f0f2927607deb",
+  "releaseNotes": "Songs can carry a seasonal tag (Christmas, Halloween, Easter, Valentine's, Summer). Shuffle favours music in season and pushes other-season music back; untagged music stays neutral. Christmas runs 10 November to 31 January, Halloween all of October, Easter is Easter Sunday plus or minus two weeks. Genre or album names like Christmas count automatically. See docs/seasonal-tags.md."
 }
