@@ -1,7 +1,7 @@
 {
-  "versionCode": 90,
-  "versionName": "0.16.3",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.16.3/LocalWave-v0.16.3-release-signed.apk",
-  "sha256": "5c54563cfaffae6516c266effee2c29ed8299f50bdc2cb334215f9cad34a7b71",
-  "releaseNotes": "Play on Roku works again on Roku OS 16: the receiver is started through the ECP launch command and accepts its control URL from that launch. The receiver now shows a waiting screen while disconnected and exits after 25 seconds instead of sitting on a blank frame."
+  "versionCode": 91,
+  "versionName": "0.16.4",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.16.4/LocalWave-v0.16.4-release-signed.apk",
+  "sha256": "248462a460823c4b156cdf222a1f9288c09bdcfe2b44dfe1c89fd1d920963261",
+  "releaseNotes": "Packaging fix: the APK now bundles the Roku receiver that works on Roku OS 16 (accepts its control URL from the launch command, no percent-decode step, exits instead of showing a blank screen). Reinstalling from Roku Setup can no longer replace a working receiver with the older build."
 }
