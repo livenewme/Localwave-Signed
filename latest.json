@@ -1,7 +1,7 @@
 {
-  "versionCode": 93,
-  "versionName": "0.16.6",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.16.6/LocalWave-v0.16.6-release-signed.apk",
-  "sha256": "04336aa7782a23cc73fc1895010ec624aa28868076b7bde7b146fb2e30afa731",
-  "releaseNotes": "The Roku channel now works without the phone: opened on its own it reads your library from the PC and plays from there. Bundles the receiver that was verified on the TV."
+  "versionCode": 94,
+  "versionName": "0.16.7",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.16.7/LocalWave-v0.16.7-release-signed.apk",
+  "sha256": "7bd581aacf450688989126219264ae99097cd79403c194c9ebe4d1199dfdd67e",
+  "releaseNotes": "Likes fixed: adding or removing a like saves both forms so the heart and the Liked tab always agree, and existing likes reappear after updating."
 }
