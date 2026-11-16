@@ -1,7 +1,7 @@
 {
-  "versionCode": 91,
-  "versionName": "0.16.4",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.16.4/LocalWave-v0.16.4-release-signed.apk",
-  "sha256": "248462a460823c4b156cdf222a1f9288c09bdcfe2b44dfe1c89fd1d920963261",
-  "releaseNotes": "Packaging fix: the APK now bundles the Roku receiver that works on Roku OS 16 (accepts its control URL from the launch command, no percent-decode step, exits instead of showing a blank screen). Reinstalling from Roku Setup can no longer replace a working receiver with the older build."
+  "versionCode": 92,
+  "versionName": "0.16.5",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/Localwave-Signed/release-feed/releases/v0.16.5/LocalWave-v0.16.5-release-signed.apk",
+  "sha256": "dfa4e9c82fa3c0d63eb3304e0978b8b0524ea39876faaf4f0cf344af74b21f2f",
+  "releaseNotes": "The TV now streams its audio from the LocalWave hub on your PC instead of the phone, and the PC lists the TV as its own device with what it is playing. Tracks that exist only on the phone still stream from the phone. LAN devices join the hub without a password; the tunnel still requires one."
 }
