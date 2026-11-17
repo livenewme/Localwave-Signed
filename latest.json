@@ -1,7 +1,7 @@
 {
-  "versionCode": 97,
-  "versionName": "0.16.10",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/LocalWave-Signed/release-feed/releases/v0.16.10/LocalWave-v0.16.10-release-signed.apk",
-  "sha256": "9a178c131f479514a4d5d47dd0047502db85b7d7555c4dda3df6dd8e06f0d522",
-  "releaseNotes": "Liked songs are cached offline on the phone (audio, artwork and tags) and playback prefers them over the network. Connected devices also send their likes and listening totals to the PC hub, gzipped, so it can build smart playlists from real behaviour."
+  "versionCode": 98,
+  "versionName": "0.16.11",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/LocalWave-Signed/release-feed/releases/v0.16.11/LocalWave-v0.16.11-release-signed.apk",
+  "sha256": "fa4dba9cd3f1f20db400f7f03d0d6e3f66eac652b26fc76eb594f25cca5fd1c4",
+  "releaseNotes": "Stops the occasional freeze when the screen is turned off with the player open: database and disk work moved off the UI thread, and playback now holds a wake lock while audio plays."
 }
