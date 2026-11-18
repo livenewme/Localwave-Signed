@@ -1,7 +1,7 @@
 {
-  "versionCode": 98,
-  "versionName": "0.16.11",
-  "apkUrl": "https://raw.githubusercontent.com/livenewme/LocalWave-Signed/release-feed/releases/v0.16.11/LocalWave-v0.16.11-release-signed.apk",
-  "sha256": "fa4dba9cd3f1f20db400f7f03d0d6e3f66eac652b26fc76eb594f25cca5fd1c4",
-  "releaseNotes": "Stops the occasional freeze when the screen is turned off with the player open: database and disk work moved off the UI thread, and playback now holds a wake lock while audio plays."
+  "versionCode": 99,
+  "versionName": "0.16.12",
+  "apkUrl": "https://raw.githubusercontent.com/livenewme/LocalWave-Signed/release-feed/releases/v0.16.12/LocalWave-v0.16.12-release-signed.apk",
+  "sha256": "37ad0860e3df35e25fa8d38cbdd7c47b2f5e4634f1c8ab432cceb04641962fe1",
+  "releaseNotes": "Battery: listening history writes every 15 seconds instead of 5, and the app stops polling the hub for library changes while it is in the background."
 }
